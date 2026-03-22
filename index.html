@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SN26 Shift Planner — Video / LED / Network</title>
+<style>
+  :root {
+    --dark: #1F2937; --mid: #374151; --light: #F9FAFB; --border: #E5E7EB;
+    --blue: #DBEAFE; --blue-d: #3B82F6; --amber: #FEF3C7; --amber-d: #F59E0B;
+    --violet: #EDE9FE; --violet-d: #8B5CF6; --green: #D1FAE5; --green-d: #10B981;
+    --red: #FEE2E2; --red-d: #EF4444; --yellow: #FEF9C3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F3F4F6; color: var(--dark); }
+
+  .header { background: var(--dark); color: white; padding: 20px 24px; position: sticky; top: 0; z-index: 100; }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header p { font-size: 13px; color: #9CA3AF; margin-top: 4px; }
+
+  .controls { background: white; border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 72px; z-index: 99; }
+  .controls button { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: white; font-size: 13px; cursor: pointer; transition: all 0.15s; }
+  .controls button:hover { background: var(--blue); }
+  .controls button.active { background: var(--dark); color: white; border-color: var(--dark); }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 16px; }
+
+  /* Day cards */
+  .day-card { background: white; border-radius: 12px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .day-card.hidden { display: none; }
+  .day-header { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .day-header h2 { font-size: 16px; }
+  .day-header .badge { font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 600; }
+  .day-header .crew-count { font-size: 13px; color: #6B7280; }
+  .day-body { padding: 0 20px 20px; }
+
+  /* Phase colors */
+  .phase-install .day-header { background: linear-gradient(135deg, #EDE9FE, #DBEAFE); }
+  .phase-show .day-header { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
+  .phase-strike .day-header { background: linear-gradient(135deg, #FEE2E2, #FECACA); }
+
+  /* Shift blocks */
+  .shifts-grid { display: grid; gap: 12px; margin-top: 12px; }
+  .shifts-grid.three-col { grid-template-columns: repeat(3, 1fr); }
+  .shifts-grid.two-col { grid-template-columns: repeat(2, 1fr); }
+  .shifts-grid.one-col { grid-template-columns: 1fr; }
+
+  .shift-block { border-radius: 8px; border: 2px solid var(--border); overflow: hidden; }
+  .shift-label { padding: 10px 14px; font-weight: 700; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+  .shift-label .time { font-weight: 400; font-size: 12px; opacity: 0.8; }
+  .shift-a .shift-label { background: var(--amber); color: #92400E; }
+  .shift-b .shift-label { background: var(--blue); color: #1E40AF; }
+  .shift-c .shift-label { background: var(--violet); color: #5B21B6; }
+  .shift-show .shift-label { background: var(--green); color: #065F46; }
+  .shift-strike .shift-label { background: var(--red); color: #991B1B; }
+
+  .shift-details { padding: 10px 14px; font-size: 12px; color: #6B7280; border-bottom: 1px solid var(--border); }
+  .shift-details .loc { font-weight: 600; color: var(--dark); }
+  .encore-badge { display: inline-block; background: var(--yellow); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; color: #92400E; margin-top: 4px; }
+
+  .crew-slots { padding: 10px 14px; }
+  .crew-slots h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #9CA3AF; margin-bottom: 6px; }
+
+  .crew-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 12px; margin: 2px; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+  .crew-tag:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .crew-tag.assigned { opacity: 0.4; text-decoration: line-through; }
+
+  .crew-tag.video { background: #DBEAFE; color: #1E40AF; }
+  .crew-tag.led-lead { background: #FEF3C7; color: #92400E; }
+  .crew-tag.led { background: #FDE68A; color: #78350F; }
+  .crew-tag.local-led { background: #FED7AA; color: #9A3412; }
+  .crew-tag.network { background: #D1FAE5; color: #065F46; }
+
+  .crew-tag .role-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .video .role-dot { background: #3B82F6; }
+  .led-lead .role-dot { background: #F59E0B; }
+  .led .role-dot { background: #D97706; }
+  .local-led .role-dot { background: #EA580C; }
+  .network .role-dot { background: #10B981; }
+
+  /* Assignment area */
+  .assignment-area { margin-top: 8px; min-height: 36px; border: 2px dashed #D1D5DB; border-radius: 6px; padding: 6px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; transition: all 0.15s; }
+  .assignment-area.has-items { border-color: #10B981; background: #F0FDF4; }
+  .assignment-area .placeholder { font-size: 11px; color: #9CA3AF; padding: 4px; }
+
+  .assigned-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: white; border: 1px solid #D1D5DB; cursor: pointer; }
+  .assigned-tag:hover { background: #FEE2E2; border-color: #EF4444; }
+  .assigned-tag .remove { color: #EF4444; font-weight: 700; }
+
+  /* Summary bar */
+  .summary-bar { background: white; border-radius: 8px; padding: 12px 20px; margin-bottom: 16px; display: flex; gap: 24px; flex-wrap: wrap; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .summary-stat { text-align: center; }
+  .summary-stat .num { font-size: 24px; font-weight: 700; color: var(--dark); }
+  .summary-stat .label { font-size: 11px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Crew roster sidebar */
+  .layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+  .roster { position: sticky; top: 120px; align-self: start; }
+  .roster-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); max-height: calc(100vh - 140px); overflow-y: auto; }
+  .roster-card h3 { font-size: 14px; margin-bottom: 12px; color: var(--dark); }
+  .roster-group { margin-bottom: 12px; }
+  .roster-group h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #9CA3AF; margin-bottom: 4px; }
+  .roster-person { padding: 6px 0; border-bottom: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center; }
+  .roster-person .name { font-size: 13px; font-weight: 600; }
+  .roster-person .dates { font-size: 11px; color: #9CA3AF; }
+  .roster-person .shift-count { font-size: 11px; background: #E5E7EB; padding: 1px 6px; border-radius: 8px; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .roster { position: relative; top: 0; }
+    .shifts-grid.three-col { grid-template-columns: 1fr; }
+    .shifts-grid.two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SN26 Shift Planner</h1>
+  <p>Video / LED / Network Crew — Apr 30 – May 9, 2026 &nbsp;|&nbsp; Click crew names to assign to shifts</p>
+</div>
+
+<div class="controls" id="controls">
+  <button class="active" data-filter="all">All Days</button>
+  <button data-filter="install">Install (4/30–5/4)</button>
+  <button data-filter="show">Show (5/5–5/7)</button>
+  <button data-filter="strike">Strike (5/7–5/9)</button>
+  <span style="flex:1"></span>
+  <button id="exportCsv" style="background:#10B981;color:white;border-color:#10B981;font-weight:600" onclick="exportCSV()">Export CSV</button>
+</div>
+
+<div class="container">
+  <div class="summary-bar" id="summary"></div>
+  <div class="layout">
+    <div class="days-list" id="days"></div>
+    <div class="roster">
+      <div class="roster-card" id="roster"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CREW = [
+  { name: 'Iqral La Rode', short: 'Iq', role: 'Prod Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,4)]] },
+  { name: 'David Devore', short: 'Devore', role: 'Video Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
+  { name: 'Luke Irvine', short: 'Luke I', role: 'Video', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
+  { name: 'Riley Ledford', short: 'Riley', role: 'Video', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
+  { name: 'Jared McCammon', short: 'Jared', role: 'd3', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
+  { name: 'Alec Birdman', short: 'Alec', role: 'd3', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
+  { name: 'Brandon Horner', short: 'Brandon', role: 'RS4 Op', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,4)]] },
+  { name: 'Justice Simpson', short: 'Justice', role: 'Content Mgr', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,7)]] },
+  { name: 'Hugo Soto', short: 'Hugo', role: 'LED Lead', group: 'led-lead', dates: [[new Date(2026,3,20), new Date(2026,4,8)]] },
+  { name: 'Matt Covell', short: 'Matt C', role: 'LED Lead', group: 'led-lead', dates: [[new Date(2026,3,20), new Date(2026,4,8)]] },
+  { name: 'Bryant Mendez', short: 'Bryant', role: 'LED Lead', group: 'led-lead', dates: [[new Date(2026,3,23), new Date(2026,4,5)]], pencilled: true },
+  { name: 'Jesse Fryson', short: 'Jesse', role: 'LED Lead', group: 'led-lead', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Maxwell Bordelon', short: 'Max B', role: 'LED', group: 'led', dates: [[new Date(2026,3,20), new Date(2026,4,9)]] },
+  { name: 'Jonathan (Johnny) Jordan', short: 'Johnny', role: 'LED', group: 'led', dates: [[new Date(2026,3,20), new Date(2026,4,9)]] },
+  { name: 'Barrett Jacocks', short: 'Barrett', role: 'LED', group: 'led', dates: [[new Date(2026,3,27), new Date(2026,4,9)]] },
+  { name: 'Tavis Parker', short: 'Tavis', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
+  { name: 'Vincent Lewis', short: 'Vincent', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
+  { name: 'Eric Petty', short: 'Eric P', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,5)]] },
+  { name: 'Jeremiah Cash', short: 'Jeremiah', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
+  { name: 'John Balak', short: 'John B', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
+  { name: 'Wayne Sager', short: 'Wayne', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Donald Freitas', short: 'Donald', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Kaden Ryan', short: 'Kaden', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Joseph Harris', short: 'Joseph', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Ryan DeOcampo', short: 'Ryan D', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Arjay Sevilla', short: 'Arjay', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Sean McCoy', short: 'Sean', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Tanner Ouimette', short: 'Tanner', role: 'Networking', group: 'network', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
+  { name: 'Josh Gardiner', short: 'Josh G', role: 'Catwalk Lead', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,7)]] },
+  { name: 'Tyler Noble', short: 'Tyler N', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Francisco Garcia', short: 'Cisco', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Luke Miles', short: 'Luke M', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Jordan Noble', short: 'Jordan N', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+];
+
+const DAYS = [
+  { date: new Date(2026,3,30), label: 'Wed 4/30', title: 'Hall B Install', phase: 'install',
+    shifts: [
+      { id:'0430A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall B', cls:'shift-a', encore: {led:8, cat:8} },
+      { id:'0430B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall B', cls:'shift-b', encore: {led:8, cat:8} },
+      { id:'0430C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall B', cls:'shift-c', encore: {led:8, cat:8} },
+    ]},
+  { date: new Date(2026,4,1), label: 'Thu 5/1', title: 'Hall C/D Install', phase: 'install',
+    shifts: [
+      { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', encore: {led:8, cat:8} },
+      { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', encore: {led:8, cat:8} },
+      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', encore: {led:8, cat:8} },
+    ]},
+  { date: new Date(2026,4,2), label: 'Fri 5/2', title: 'Foyer + Exhibit Floor', phase: 'install',
+    shifts: [
+      { id:'0502A', label:'Shift A', time:'12:00a – 11:00a', loc:'Foyer Lvl 2', cls:'shift-a', encore: {led:4, cat:0} },
+      { id:'0502B', label:'Shift B', time:'8:00a – 7:00p', loc:'Exhibit Floor', cls:'shift-b', encore: {led:4, cat:0} },
+    ]},
+  { date: new Date(2026,4,3), label: 'Sat 5/3', title: 'Expo Hall Install', phase: 'install',
+    shifts: [
+      { id:'0503A', label:'Shift A', time:'8:00a – 7:00p', loc:'Expo Hall', cls:'shift-a', encore: {led:4, cat:0} },
+      { id:'0503B', label:'Shift B', time:'3:00p – 2:00a', loc:'Expo Hall', cls:'shift-b', encore: {led:4, cat:0} },
+    ]},
+  { date: new Date(2026,4,4), label: 'Sun 5/4', title: 'Foyer + Expo Finish', phase: 'install',
+    shifts: [
+      { id:'0504A', label:'Shift A', time:'8:00a – 7:00p', loc:'Foyer', cls:'shift-a', encore: {led:4, cat:0} },
+      { id:'0504B', label:'Shift B', time:'5:00p – 4:00a', loc:'Expo Hall', cls:'shift-b', encore: {led:2, cat:0} },
+    ]},
+  { date: new Date(2026,4,5), label: 'Mon 5/5', title: 'Show Day 1', phase: 'show',
+    shifts: [
+      { id:'0505', label:'SHOW', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
+    ]},
+  { date: new Date(2026,4,6), label: 'Tue 5/6', title: 'Show Day 2', phase: 'show',
+    shifts: [
+      { id:'0506', label:'SHOW', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
+    ]},
+  { date: new Date(2026,4,7), label: 'Wed 5/7', title: 'Show Day 3 + Strike', phase: 'strike',
+    shifts: [
+      { id:'0507S', label:'SHOW', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
+      { id:'0507X', label:'STRIKE', time:'3:00p – 12:00a', loc:'Expo Hall', cls:'shift-strike', encore: {led:4, cat:12} },
+    ]},
+  { date: new Date(2026,4,8), label: 'Thu 5/8', title: 'Strike Day 2', phase: 'strike',
+    shifts: [
+      { id:'0508A', label:'Shift A', time:'8:00a – 7:00p', loc:'Expo Hall', cls:'shift-a', encore: {led:4, cat:12} },
+      { id:'0508B', label:'Shift B', time:'3:00p – 12:00a', loc:'Expo Hall', cls:'shift-b', encore: {led:4, cat:4} },
+    ]},
+  { date: new Date(2026,4,9), label: 'Fri 5/9', title: 'Load-Out', phase: 'strike',
+    shifts: [
+      { id:'0509', label:'LOAD-OUT', time:'8:00a – 6:00p', loc:'Expo Hall', cls:'shift-strike', encore: {led:0, cat:0} },
+    ]},
+];
+
+// State: assignments[shiftId] = [crewIndex, ...]
+let assignments = {};
+DAYS.forEach(d => d.shifts.forEach(s => assignments[s.id] = []));
+
+function isAvailable(crew, date) {
+  return crew.dates.some(([s, e]) => date >= s && date <= e);
+}
+
+function isAssignedAnywhere(crewIdx, dayDate) {
+  // Check if crew member is already assigned to another shift on the same day
+  const day = DAYS.find(d => d.date.getTime() === dayDate.getTime());
+  if (!day) return false;
+  return day.shifts.some(s => assignments[s.id].includes(crewIdx));
+}
+
+function getAssignedShiftOnDay(crewIdx, dayDate) {
+  const day = DAYS.find(d => d.date.getTime() === dayDate.getTime());
+  if (!day) return null;
+  for (const s of day.shifts) {
+    if (assignments[s.id].includes(crewIdx)) return s;
+  }
+  return null;
+}
+
+function toggleAssignment(shiftId, crewIdx) {
+  const arr = assignments[shiftId];
+  const idx = arr.indexOf(crewIdx);
+  if (idx >= 0) {
+    arr.splice(idx, 1);
+  } else {
+    // Remove from other shifts on same day first
+    const day = DAYS.find(d => d.shifts.some(s => s.id === shiftId));
+    if (day) {
+      day.shifts.forEach(s => {
+        const i = assignments[s.id].indexOf(crewIdx);
+        if (i >= 0) assignments[s.id].splice(i, 1);
+      });
+    }
+    arr.push(crewIdx);
+  }
+  saveAssignments();
+  render();
+}
+
+// --- localStorage persistence ---
+function saveAssignments() {
+  try { localStorage.setItem('sn26_assignments', JSON.stringify(assignments)); } catch(e) {}
+}
+function loadAssignments() {
+  try {
+    const saved = localStorage.getItem('sn26_assignments');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    // Validate and restore — only keep valid shift IDs and crew indices
+    for (const shiftId of Object.keys(assignments)) {
+      if (Array.isArray(data[shiftId])) {
+        assignments[shiftId] = data[shiftId].filter(i => Number.isInteger(i) && i >= 0 && i < CREW.length);
+      }
+    }
+  } catch(e) {}
+}
+
+// --- Export CSV ---
+function exportCSV() {
+  const header = 'Date,Day,Phase,Shift,Time,Location,Crew Name,Short Name,Role,Department';
+  const rows = [header];
+  DAYS.forEach(day => {
+    const dateStr = `${day.date.getFullYear()}-${String(day.date.getMonth()+1).padStart(2,'0')}-${String(day.date.getDate()).padStart(2,'0')}`;
+    day.shifts.forEach(shift => {
+      const assigned = assignments[shift.id];
+      if (assigned.length === 0) {
+        // Include empty shift row so all shifts appear
+        rows.push([dateStr, day.label, day.phase, shift.label, `"${shift.time}"`, `"${shift.loc}"`, '', '', '', ''].join(','));
+      } else {
+        assigned.forEach(ci => {
+          const c = CREW[ci];
+          const groupLabels = {'video':'Video','led-lead':'LED Lead','led':'LED','local-led':'Local LED','network':'Network/Catwalk'};
+          rows.push([dateStr, day.label, day.phase, shift.label, `"${shift.time}"`, `"${shift.loc}"`, `"${c.name}"`, c.short, c.role, groupLabels[c.group] || c.group].join(','));
+        });
+      }
+    });
+  });
+  const csv = rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date();
+  a.href = url;
+  a.download = `SN26_Crew_Assignments_${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function render() {
+  const filter = document.querySelector('.controls button.active')?.dataset.filter || 'all';
+
+  // Summary
+  let totalAssigned = 0, totalAvail = 0, totalShifts = DAYS.reduce((a, d) => a + d.shifts.length, 0);
+  Object.values(assignments).forEach(a => totalAssigned += a.length);
+  DAYS.forEach(d => d.shifts.forEach(s => {
+    CREW.forEach((c, i) => { if (isAvailable(c, d.date)) totalAvail++; });
+  }));
+
+  let unassignedCrew = 0;
+  DAYS.forEach(d => {
+    CREW.forEach((c, i) => {
+      if (isAvailable(c, d.date) && !isAssignedAnywhere(i, d.date)) unassignedCrew++;
+    });
+  });
+
+  document.getElementById('summary').innerHTML = `
+    <div class="summary-stat"><div class="num">${totalShifts}</div><div class="label">Total Shifts</div></div>
+    <div class="summary-stat"><div class="num">${CREW.length}</div><div class="label">Crew Members</div></div>
+    <div class="summary-stat"><div class="num" style="color:${totalAssigned > 0 ? '#10B981' : '#6B7280'}">${totalAssigned}</div><div class="label">Assigned Slots</div></div>
+    <div class="summary-stat"><div class="num" style="color:#F59E0B">${unassignedCrew}</div><div class="label">Unassigned Person-Days</div></div>
+  `;
+
+  // Days
+  let daysHtml = '';
+  DAYS.forEach(day => {
+    const show = filter === 'all' || filter === day.phase;
+    const availCrew = CREW.map((c, i) => ({ ...c, idx: i })).filter(c => isAvailable(c, day.date));
+    const availByGroup = {};
+    availCrew.forEach(c => {
+      if (!availByGroup[c.group]) availByGroup[c.group] = [];
+      availByGroup[c.group].push(c);
+    });
+
+    const gridClass = day.shifts.length === 3 ? 'three-col' : day.shifts.length === 2 ? 'two-col' : 'one-col';
+
+    let shiftsHtml = day.shifts.map(shift => {
+      const assigned = assignments[shift.id];
+      const encoreHtml = (shift.encore.led > 0 || shift.encore.cat > 0)
+        ? `<div style="margin-top:4px">
+            ${shift.encore.led > 0 ? `<span class="encore-badge">Encore: ${shift.encore.led} LED hands</span> ` : ''}
+            ${shift.encore.cat > 0 ? `<span class="encore-badge">Encore: ${shift.encore.cat} Catwalk hands</span>` : ''}
+           </div>` : '';
+
+      // Available crew tags for this shift
+      const groupOrder = ['video', 'led-lead', 'led', 'local-led', 'network'];
+      const groupLabels = { 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
+
+      let crewHtml = '';
+      groupOrder.forEach(g => {
+        const members = (availByGroup[g] || []);
+        if (members.length === 0) return;
+        const tags = members.map(c => {
+          const isAssignedHere = assigned.includes(c.idx);
+          const isAssignedElsewhere = !isAssignedHere && isAssignedAnywhere(c.idx, day.date);
+          const cls = isAssignedHere ? 'assigned-here' : isAssignedElsewhere ? 'assigned-elsewhere' : '';
+          const style = isAssignedHere
+            ? 'border: 2px solid #10B981; background: #D1FAE5;'
+            : isAssignedElsewhere
+            ? 'opacity: 0.3; text-decoration: line-through;'
+            : '';
+          return `<span class="crew-tag ${c.group}" style="${style}" onclick="toggleAssignment('${shift.id}', ${c.idx})" title="${c.name} — ${c.role}${c.pencilled ? ' (PENCILLED)' : ''}${isAssignedElsewhere ? ' (assigned to ' + getAssignedShiftOnDay(c.idx, day.date)?.label + ')' : ''}">
+            <span class="role-dot"></span>${c.short}${c.pencilled ? '*' : ''}
+          </span>`;
+        }).join('');
+        crewHtml += `<div style="margin-bottom:4px"><span style="font-size:10px;color:#9CA3AF;font-weight:600">${groupLabels[g]}</span><br>${tags}</div>`;
+      });
+
+      // Assigned summary
+      const assignedNames = assigned.map(i => CREW[i].short);
+      const assignedHtml = assigned.length > 0
+        ? `<div class="assignment-area has-items">${assigned.map(i =>
+            `<span class="assigned-tag" onclick="toggleAssignment('${shift.id}', ${i})"><span class="role-dot" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${
+              CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
+            }"></span> ${CREW[i].short} <span class="remove">&times;</span></span>`
+          ).join('')}</div>`
+        : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
+
+      return `<div class="shift-block ${shift.cls}">
+        <div class="shift-label">${shift.label} <span class="time">${shift.time}</span></div>
+        <div class="shift-details">
+          <span class="loc">${shift.loc}</span>
+          ${encoreHtml}
+        </div>
+        <div class="crew-slots">
+          <h4>Available Crew (${availCrew.length})</h4>
+          ${crewHtml}
+          <h4 style="margin-top:8px">Assigned to This Shift (${assigned.length})</h4>
+          ${assignedHtml}
+        </div>
+      </div>`;
+    }).join('');
+
+    const assignedOnDay = day.shifts.reduce((sum, s) => sum + assignments[s.id].length, 0);
+
+    daysHtml += `<div class="day-card phase-${day.phase} ${show ? '' : 'hidden'}">
+      <div class="day-header" onclick="this.parentElement.querySelector('.day-body').style.display = this.parentElement.querySelector('.day-body').style.display === 'none' ? 'block' : 'none'">
+        <div>
+          <h2>${day.label} — ${day.title}</h2>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <span class="crew-count">${availCrew.length} crew avail &nbsp;|&nbsp; ${assignedOnDay} assigned</span>
+          <span class="badge" style="background:${day.phase === 'install' ? '#EDE9FE;color:#5B21B6' : day.phase === 'show' ? '#D1FAE5;color:#065F46' : '#FEE2E2;color:#991B1B'}">${day.shifts.length} shift${day.shifts.length > 1 ? 's' : ''}</span>
+        </div>
+      </div>
+      <div class="day-body">
+        <div class="shifts-grid ${gridClass}">${shiftsHtml}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('days').innerHTML = daysHtml;
+
+  // Roster
+  const groupOrder = ['video', 'led-lead', 'led', 'local-led', 'network'];
+  const groupLabels = { 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
+  let rosterHtml = '<h3>Full Crew Roster</h3>';
+  groupOrder.forEach(g => {
+    const members = CREW.map((c, i) => ({ ...c, idx: i })).filter(c => c.group === g);
+    rosterHtml += `<div class="roster-group"><h4>${groupLabels[g]}</h4>`;
+    members.forEach(c => {
+      let shiftCount = 0;
+      Object.entries(assignments).forEach(([sid, arr]) => { if (arr.includes(c.idx)) shiftCount++; });
+      const dateStr = c.dates.map(([s, e]) => `${s.getMonth()+1}/${s.getDate()}–${e.getMonth()+1}/${e.getDate()}`).join(', ');
+      rosterHtml += `<div class="roster-person">
+        <div><span class="name">${c.short}</span> <span style="font-size:11px;color:#6B7280">${c.role}${c.pencilled ? ' *' : ''}</span></div>
+        <div><span class="dates">${dateStr}</span> <span class="shift-count">${shiftCount}</span></div>
+      </div>`;
+    });
+    rosterHtml += '</div>';
+  });
+  rosterHtml += '<p style="font-size:11px;color:#9CA3AF;margin-top:12px">* = Pencilled (not confirmed)</p>';
+  document.getElementById('roster').innerHTML = rosterHtml;
+}
+
+// Filter buttons
+document.getElementById('controls').addEventListener('click', e => {
+  if (e.target.tagName === 'BUTTON') {
+    document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    render();
+  }
+});
+
+loadAssignments();
+render();
+</script>
+</body>
+</html>
