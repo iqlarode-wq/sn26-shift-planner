@@ -142,7 +142,7 @@
   <button class="active" data-filter="all">All Days</button>
   <button data-filter="install">Install (4/30–5/4)</button>
   <button data-filter="show">Show (5/5–5/7)</button>
-  <button data-filter="strike">Strike (5/7–5/9)</button>
+  <button data-filter="strike">Strike (5/8–5/9)</button>
   <span style="flex:1"></span>
   <button style="background:#EF4444;color:white;border-color:#EF4444;font-weight:600" onclick="clearAllAssignments()">Clear All</button>
   <button id="exportCsv" style="background:#10B981;color:white;border-color:#10B981;font-weight:600" onclick="exportCSV()">Export CSV</button>
@@ -209,7 +209,7 @@ const DAYS = [
       { id:'0501VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall C/D', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
       { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['N (12a–8a/10a)', 'K (4a–10a/12p)', 'L2: Vista 3 LED (4a–8a/10a)', 'J: Convex/Concave Circle floor LED (4a–8a, before carpet)', 'Fuse Truck Zone 5 (12a–8a)'] },
       { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['Finish N by 10a, K by 12p', 'E: Banner3, Kinetic + F: Banner5 (start 12p, continues to 10p → Shift C)'] },
-      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['Finish E: Banner3, Kinetic + F: Banner5 by 10p', 'Start B2: SSTotem area (10p overnight)'] },
+      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['Finish E: Banner3, Kinetic + F: Banner5 by 10p', 'Fuse Truck Zone 6 (10p–12a)', 'Start B2: SSTotem area (10p overnight)'] },
     ]},
   { date: new Date(2026,4,2), label: 'Fri 5/2', title: 'Foyer + Exhibit Floor', phase: 'install',
     shifts: [
@@ -241,7 +241,7 @@ const DAYS = [
     shifts: [
       { id:'0506', label:'SHOW', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
     ]},
-  { date: new Date(2026,4,7), label: 'Wed 5/7', title: 'Show Day 3 + Strike', phase: 'strike',
+  { date: new Date(2026,4,7), label: 'Wed 5/7', title: 'Show Day 3 + Strike', phase: 'show',
     shifts: [
       { id:'0507S', label:'SHOW', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
       { id:'0507X', label:'STRIKE', time:'3:00p – 12:00a', loc:'Expo Hall', cls:'shift-strike', encore: {led:4, cat:12} },
@@ -655,8 +655,8 @@ function render() {
 
 // Filter buttons
 document.getElementById('controls').addEventListener('click', e => {
-  if (e.target.tagName === 'BUTTON') {
-    document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+  if (e.target.tagName === 'BUTTON' && e.target.dataset.filter) {
+    document.querySelectorAll('.controls button[data-filter]').forEach(b => b.classList.remove('active'));
     e.target.classList.add('active');
     render();
   }
