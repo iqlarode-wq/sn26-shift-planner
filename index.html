@@ -65,6 +65,7 @@
   .crew-tag:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   .crew-tag.assigned { opacity: 0.4; text-decoration: line-through; }
 
+  .crew-tag.custom { background: #F3E8FF; color: #6B21A8; }
   .crew-tag.video { background: #DBEAFE; color: #1E40AF; }
   .crew-tag.led-lead { background: #FEF3C7; color: #92400E; }
   .crew-tag.led { background: #FDE68A; color: #78350F; }
@@ -72,6 +73,7 @@
   .crew-tag.network { background: #D1FAE5; color: #065F46; }
 
   .crew-tag .role-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .custom .role-dot { background: #9333EA; }
   .video .role-dot { background: #3B82F6; }
   .led-lead .role-dot { background: #F59E0B; }
   .led .role-dot { background: #D97706; }
@@ -152,7 +154,7 @@
 
 <script>
 const CREW = [
-  { name: 'Iqral La Rode', short: 'Iq', role: 'Video Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,4)]] },
+  { name: 'Iqral La Rode', short: 'Iq', role: 'Video Lead', group: 'custom', dates: [[new Date(2026,3,17), new Date(2026,4,4)]] },
   { name: 'David Devore', short: 'Devore', role: 'Video Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
   { name: 'Luke Irvine', short: 'Luke I', role: 'Video Floater', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
   { name: 'Riley Ledford', short: 'Riley', role: 'Video', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
@@ -326,7 +328,7 @@ function exportCSV() {
       } else {
         assigned.forEach(ci => {
           const c = CREW[ci];
-          const groupLabels = {'video':'Video','led-lead':'LED Lead','led':'LED','local-led':'Local LED','network':'Network/Catwalk'};
+          const groupLabels = {'custom':'Custom','video':'Video','led-lead':'LED Lead','led':'LED','local-led':'Local LED','network':'Network/Catwalk'};
           rows.push([dateStr, day.label, day.phase, shift.label, `"${shift.time}"`, `"${shift.loc}"`, deptLabel, `"${c.name}"`, c.short, c.role, groupLabels[c.group] || c.group].join(','));
         });
       }
@@ -387,8 +389,8 @@ function render() {
 
     if (hasDepts) {
       // Render by department sections
-      const groupOrder = ['video', 'led-lead', 'led', 'local-led', 'network'];
-      const groupLabels = { 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
+      const groupOrder = ['custom', 'video', 'led-lead', 'led', 'local-led', 'network'];
+      const groupLabels = { 'custom': 'Custom Schedule', 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
 
       // VIDEO DEPARTMENT
       const videoShifts = day.shifts.filter(s => s.dept === 'video');
@@ -432,7 +434,7 @@ function render() {
           const assignedHtml = assigned.length > 0
             ? `<div class="assignment-area has-items">${assigned.map(i =>
                 `<span class="assigned-tag" onclick="toggleAssignment('${shift.id}', ${i})"><span class="role-dot" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${
-                  CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
+                  CREW[i].group === 'custom' ? '#9333EA' : CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
                 }"></span> ${CREW[i].short} <span class="remove">&times;</span></span>`
               ).join('')}</div>`
             : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
@@ -501,7 +503,7 @@ function render() {
           const assignedHtml = assigned.length > 0
             ? `<div class="assignment-area has-items">${assigned.map(i =>
                 `<span class="assigned-tag" onclick="toggleAssignment('${shift.id}', ${i})"><span class="role-dot" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${
-                  CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
+                  CREW[i].group === 'custom' ? '#9333EA' : CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
                 }"></span> ${CREW[i].short} <span class="remove">&times;</span></span>`
               ).join('')}</div>`
             : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
@@ -530,8 +532,8 @@ function render() {
     } else {
       // Original rendering (no depts)
       const gridClass = day.shifts.length === 3 ? 'three-col' : day.shifts.length === 2 ? 'two-col' : 'one-col';
-      const groupOrder = ['video', 'led-lead', 'led', 'local-led', 'network'];
-      const groupLabels = { 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
+      const groupOrder = ['custom', 'video', 'led-lead', 'led', 'local-led', 'network'];
+      const groupLabels = { 'custom': 'Custom Schedule', 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
 
       shiftsHtml = day.shifts.map(shift => {
         const assigned = assignments[shift.id];
@@ -565,7 +567,7 @@ function render() {
         const assignedHtml = assigned.length > 0
           ? `<div class="assignment-area has-items">${assigned.map(i =>
               `<span class="assigned-tag" onclick="toggleAssignment('${shift.id}', ${i})"><span class="role-dot" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${
-                CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
+                CREW[i].group === 'custom' ? '#9333EA' : CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
               }"></span> ${CREW[i].short} <span class="remove">&times;</span></span>`
             ).join('')}</div>`
           : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
@@ -609,8 +611,8 @@ function render() {
   document.getElementById('days').innerHTML = daysHtml;
 
   // Roster
-  const groupOrder = ['video', 'led-lead', 'led', 'local-led', 'network'];
-  const groupLabels = { 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
+  const groupOrder = ['custom', 'video', 'led-lead', 'led', 'local-led', 'network'];
+  const groupLabels = { 'custom': 'Custom Schedule', 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
   let rosterHtml = '<h3>Full Crew Roster</h3>';
   groupOrder.forEach(g => {
     const members = CREW.map((c, i) => ({ ...c, idx: i })).filter(c => c.group === g);
