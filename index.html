@@ -78,6 +78,13 @@
   .local-led .role-dot { background: #EA580C; }
   .network .role-dot { background: #10B981; }
 
+  /* Department sections */
+  .dept-section { margin-top: 16px; }
+  .dept-section:first-child { margin-top: 0; }
+  .dept-header { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 12px; border-radius: 6px; margin-bottom: 8px; display: inline-block; }
+  .dept-header.video-dept { background: #DBEAFE; color: #1E40AF; }
+  .dept-header.led-dept { background: #FEF3C7; color: #92400E; }
+
   /* Assignment area */
   .assignment-area { margin-top: 8px; min-height: 36px; border: 2px dashed #D1D5DB; border-radius: 6px; padding: 6px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; transition: all 0.15s; }
   .assignment-area.has-items { border-color: #10B981; background: #F0FDF4; }
@@ -141,9 +148,9 @@
 
 <script>
 const CREW = [
-  { name: 'Iqral La Rode', short: 'Iq', role: 'Prod Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,4)]] },
+  { name: 'Iqral La Rode', short: 'Iq', role: 'Video Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,4)]] },
   { name: 'David Devore', short: 'Devore', role: 'Video Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
-  { name: 'Luke Irvine', short: 'Luke I', role: 'Video', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
+  { name: 'Luke Irvine', short: 'Luke I', role: 'Video Floater', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
   { name: 'Riley Ledford', short: 'Riley', role: 'Video', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
   { name: 'Jared McCammon', short: 'Jared', role: 'd3', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
   { name: 'Alec Birdman', short: 'Alec', role: 'd3', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
@@ -178,30 +185,41 @@ const CREW = [
 const DAYS = [
   { date: new Date(2026,3,30), label: 'Wed 4/30', title: 'Hall B Install', phase: 'install',
     shifts: [
-      { id:'0430A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall B', cls:'shift-a', encore: {led:8, cat:8} },
-      { id:'0430B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall B', cls:'shift-b', encore: {led:8, cat:8} },
-      { id:'0430C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall B', cls:'shift-c', encore: {led:8, cat:8} },
+      { id:'0430VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Hall B', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0430VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall B', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0430A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall B', cls:'shift-a', dept:'led', encore: {led:8, cat:8} },
+      { id:'0430B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall B', cls:'shift-b', dept:'led', encore: {led:8, cat:8} },
+      { id:'0430C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall B', cls:'shift-c', dept:'led', encore: {led:8, cat:8} },
     ]},
   { date: new Date(2026,4,1), label: 'Thu 5/1', title: 'Hall C/D Install', phase: 'install',
     shifts: [
-      { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', encore: {led:8, cat:8} },
-      { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', encore: {led:8, cat:8} },
-      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', encore: {led:8, cat:8} },
+      { id:'0501VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Hall C/D', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0501VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall C/D', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8} },
+      { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8} },
+      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8} },
     ]},
   { date: new Date(2026,4,2), label: 'Fri 5/2', title: 'Foyer + Exhibit Floor', phase: 'install',
     shifts: [
-      { id:'0502A', label:'Shift A', time:'12:00a – 11:00a', loc:'Foyer Lvl 2', cls:'shift-a', encore: {led:4, cat:0} },
-      { id:'0502B', label:'Shift B', time:'8:00a – 7:00p', loc:'Exhibit Floor', cls:'shift-b', encore: {led:4, cat:0} },
+      { id:'0502VA', label:'Shift A', time:'5:00a – 3:00p', loc:'Foyer + Exhibit', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0502VB', label:'Shift B', time:'6:00a – 5:00p', loc:'Foyer + Exhibit', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0502VC', label:'Shift C', time:'2:00p – 1:00a', loc:'Foyer + Exhibit', cls:'shift-c', dept:'video', encore: {led:0, cat:0} },
+      { id:'0502A', label:'Shift A', time:'12:00a – 11:00a', loc:'Foyer Lvl 2', cls:'shift-a', dept:'led', encore: {led:4, cat:0} },
+      { id:'0502B', label:'Shift B', time:'8:00a – 7:00p', loc:'Exhibit Floor', cls:'shift-b', dept:'led', encore: {led:4, cat:0} },
     ]},
   { date: new Date(2026,4,3), label: 'Sat 5/3', title: 'Expo Hall Install', phase: 'install',
     shifts: [
-      { id:'0503A', label:'Shift A', time:'8:00a – 7:00p', loc:'Expo Hall', cls:'shift-a', encore: {led:4, cat:0} },
-      { id:'0503B', label:'Shift B', time:'3:00p – 2:00a', loc:'Expo Hall', cls:'shift-b', encore: {led:4, cat:0} },
+      { id:'0503VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0503VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Expo Hall', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0503A', label:'Shift A', time:'8:00a – 7:00p', loc:'Expo Hall', cls:'shift-a', dept:'led', encore: {led:4, cat:0} },
+      { id:'0503B', label:'Shift B', time:'3:00p – 2:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:4, cat:0} },
     ]},
   { date: new Date(2026,4,4), label: 'Sun 5/4', title: 'Foyer + Expo Finish', phase: 'install',
     shifts: [
-      { id:'0504A', label:'Shift A', time:'8:00a – 7:00p', loc:'Foyer', cls:'shift-a', encore: {led:4, cat:0} },
-      { id:'0504B', label:'Shift B', time:'5:00p – 4:00a', loc:'Expo Hall', cls:'shift-b', encore: {led:2, cat:0} },
+      { id:'0504VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Foyer + Expo', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0504VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Foyer + Expo', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0504A', label:'Shift A', time:'8:00a – 7:00p', loc:'Foyer', cls:'shift-a', dept:'led', encore: {led:4, cat:0} },
+      { id:'0504B', label:'Shift B', time:'5:00p – 4:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:2, cat:0} },
     ]},
   { date: new Date(2026,4,5), label: 'Mon 5/5', title: 'Show Day 1', phase: 'show',
     shifts: [
@@ -291,20 +309,21 @@ function loadAssignments() {
 
 // --- Export CSV ---
 function exportCSV() {
-  const header = 'Date,Day,Phase,Shift,Time,Location,Crew Name,Short Name,Role,Department';
+  const header = 'Date,Day,Phase,Shift,Time,Location,Dept,Crew Name,Short Name,Role,Department';
   const rows = [header];
   DAYS.forEach(day => {
     const dateStr = `${day.date.getFullYear()}-${String(day.date.getMonth()+1).padStart(2,'0')}-${String(day.date.getDate()).padStart(2,'0')}`;
     day.shifts.forEach(shift => {
       const assigned = assignments[shift.id];
+      const deptLabel = shift.dept || '—';
       if (assigned.length === 0) {
         // Include empty shift row so all shifts appear
-        rows.push([dateStr, day.label, day.phase, shift.label, `"${shift.time}"`, `"${shift.loc}"`, '', '', '', ''].join(','));
+        rows.push([dateStr, day.label, day.phase, shift.label, `"${shift.time}"`, `"${shift.loc}"`, deptLabel, '', '', '', ''].join(','));
       } else {
         assigned.forEach(ci => {
           const c = CREW[ci];
           const groupLabels = {'video':'Video','led-lead':'LED Lead','led':'LED','local-led':'Local LED','network':'Network/Catwalk'};
-          rows.push([dateStr, day.label, day.phase, shift.label, `"${shift.time}"`, `"${shift.loc}"`, `"${c.name}"`, c.short, c.role, groupLabels[c.group] || c.group].join(','));
+          rows.push([dateStr, day.label, day.phase, shift.label, `"${shift.time}"`, `"${shift.loc}"`, deptLabel, `"${c.name}"`, c.short, c.role, groupLabels[c.group] || c.group].join(','));
         });
       }
     });
@@ -357,64 +376,211 @@ function render() {
       availByGroup[c.group].push(c);
     });
 
-    const gridClass = day.shifts.length === 3 ? 'three-col' : day.shifts.length === 2 ? 'two-col' : 'one-col';
+    // Check if any shift has a dept property
+    const hasDepts = day.shifts.some(s => s.dept);
 
-    let shiftsHtml = day.shifts.map(shift => {
-      const assigned = assignments[shift.id];
-      const encoreHtml = (shift.encore.led > 0 || shift.encore.cat > 0)
-        ? `<div style="margin-top:4px">
-            ${shift.encore.led > 0 ? `<span class="encore-badge">Encore: ${shift.encore.led} LED hands</span> ` : ''}
-            ${shift.encore.cat > 0 ? `<span class="encore-badge">Encore: ${shift.encore.cat} Catwalk hands</span>` : ''}
-           </div>` : '';
+    let shiftsHtml = '';
 
-      // Available crew tags for this shift
+    if (hasDepts) {
+      // Render by department sections
       const groupOrder = ['video', 'led-lead', 'led', 'local-led', 'network'];
       const groupLabels = { 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
 
-      let crewHtml = '';
-      groupOrder.forEach(g => {
-        const members = (availByGroup[g] || []);
-        if (members.length === 0) return;
-        const tags = members.map(c => {
-          const isAssignedHere = assigned.includes(c.idx);
-          const isAssignedElsewhere = !isAssignedHere && isAssignedAnywhere(c.idx, day.date);
-          const cls = isAssignedHere ? 'assigned-here' : isAssignedElsewhere ? 'assigned-elsewhere' : '';
-          const style = isAssignedHere
-            ? 'border: 2px solid #10B981; background: #D1FAE5;'
-            : isAssignedElsewhere
-            ? 'opacity: 0.3; text-decoration: line-through;'
-            : '';
-          return `<span class="crew-tag ${c.group}" style="${style}" onclick="toggleAssignment('${shift.id}', ${c.idx})" title="${c.name} — ${c.role}${c.pencilled ? ' (PENCILLED)' : ''}${isAssignedElsewhere ? ' (assigned to ' + getAssignedShiftOnDay(c.idx, day.date)?.label + ')' : ''}">
-            <span class="role-dot"></span>${c.short}${c.pencilled ? '*' : ''}
-          </span>`;
+      // VIDEO DEPARTMENT
+      const videoShifts = day.shifts.filter(s => s.dept === 'video');
+      if (videoShifts.length > 0) {
+        const videoGridClass = videoShifts.length === 3 ? 'three-col' : videoShifts.length === 2 ? 'two-col' : 'one-col';
+        const videoShiftsHtml = videoShifts.map(shift => {
+          const assigned = assignments[shift.id];
+          const encoreHtml = (shift.encore.led > 0 || shift.encore.cat > 0)
+            ? `<div style="margin-top:4px">
+                ${shift.encore.led > 0 ? `<span class="encore-badge">Encore: ${shift.encore.led} LED hands</span> ` : ''}
+                ${shift.encore.cat > 0 ? `<span class="encore-badge">Encore: ${shift.encore.cat} Catwalk hands</span>` : ''}
+               </div>` : '';
+
+          // Filter available crew for video only
+          const videoCrewOnly = availCrew.filter(c => c.group === 'video');
+          const videoCrew = {};
+          videoCrewOnly.forEach(c => {
+            if (!videoCrew[c.group]) videoCrew[c.group] = [];
+            videoCrew[c.group].push(c);
+          });
+
+          let crewHtml = '';
+          ['video'].forEach(g => {
+            const members = (videoCrew[g] || []);
+            if (members.length === 0) return;
+            const tags = members.map(c => {
+              const isAssignedHere = assigned.includes(c.idx);
+              const isAssignedElsewhere = !isAssignedHere && isAssignedAnywhere(c.idx, day.date);
+              const style = isAssignedHere
+                ? 'border: 2px solid #10B981; background: #D1FAE5;'
+                : isAssignedElsewhere
+                ? 'opacity: 0.3; text-decoration: line-through;'
+                : '';
+              return `<span class="crew-tag ${c.group}" style="${style}" onclick="toggleAssignment('${shift.id}', ${c.idx})" title="${c.name} — ${c.role}${c.pencilled ? ' (PENCILLED)' : ''}${isAssignedElsewhere ? ' (assigned to ' + getAssignedShiftOnDay(c.idx, day.date)?.label + ')' : ''}">
+                <span class="role-dot"></span>${c.short}${c.pencilled ? '*' : ''}
+              </span>`;
+            }).join('');
+            crewHtml += tags;
+          });
+
+          const assignedHtml = assigned.length > 0
+            ? `<div class="assignment-area has-items">${assigned.map(i =>
+                `<span class="assigned-tag" onclick="toggleAssignment('${shift.id}', ${i})"><span class="role-dot" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${
+                  CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
+                }"></span> ${CREW[i].short} <span class="remove">&times;</span></span>`
+              ).join('')}</div>`
+            : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
+
+          return `<div class="shift-block ${shift.cls}">
+            <div class="shift-label">${shift.label} <span class="time">${shift.time}</span></div>
+            <div class="shift-details">
+              <span class="loc">${shift.loc}</span>
+              ${encoreHtml}
+            </div>
+            <div class="crew-slots">
+              <h4>Available Crew (${videoCrewOnly.length})</h4>
+              ${crewHtml}
+              <h4 style="margin-top:8px">Assigned to This Shift (${assigned.length})</h4>
+              ${assignedHtml}
+            </div>
+          </div>`;
         }).join('');
-        crewHtml += `<div style="margin-bottom:4px"><span style="font-size:10px;color:#9CA3AF;font-weight:600">${groupLabels[g]}</span><br>${tags}</div>`;
-      });
 
-      // Assigned summary
-      const assignedNames = assigned.map(i => CREW[i].short);
-      const assignedHtml = assigned.length > 0
-        ? `<div class="assignment-area has-items">${assigned.map(i =>
-            `<span class="assigned-tag" onclick="toggleAssignment('${shift.id}', ${i})"><span class="role-dot" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${
-              CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
-            }"></span> ${CREW[i].short} <span class="remove">&times;</span></span>`
-          ).join('')}</div>`
-        : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
+        shiftsHtml += `<div class="dept-section">
+          <div class="dept-header video-dept">Video Shifts</div>
+          <div class="shifts-grid ${videoGridClass}">${videoShiftsHtml}</div>
+        </div>`;
+      }
 
-      return `<div class="shift-block ${shift.cls}">
-        <div class="shift-label">${shift.label} <span class="time">${shift.time}</span></div>
-        <div class="shift-details">
-          <span class="loc">${shift.loc}</span>
-          ${encoreHtml}
-        </div>
-        <div class="crew-slots">
-          <h4>Available Crew (${availCrew.length})</h4>
-          ${crewHtml}
-          <h4 style="margin-top:8px">Assigned to This Shift (${assigned.length})</h4>
-          ${assignedHtml}
-        </div>
-      </div>`;
-    }).join('');
+      // LED / NETWORK DEPARTMENT
+      const ledShifts = day.shifts.filter(s => s.dept === 'led' || !s.dept);
+      if (ledShifts.length > 0) {
+        const ledGridClass = ledShifts.length === 3 ? 'three-col' : ledShifts.length === 2 ? 'two-col' : 'one-col';
+        const ledShiftsHtml = ledShifts.map(shift => {
+          const assigned = assignments[shift.id];
+          const encoreHtml = (shift.encore.led > 0 || shift.encore.cat > 0)
+            ? `<div style="margin-top:4px">
+                ${shift.encore.led > 0 ? `<span class="encore-badge">Encore: ${shift.encore.led} LED hands</span> ` : ''}
+                ${shift.encore.cat > 0 ? `<span class="encore-badge">Encore: ${shift.encore.cat} Catwalk hands</span>` : ''}
+               </div>` : '';
+
+          // Filter available crew for led/network groups
+          const ledCrewOnly = availCrew.filter(c => ['led-lead', 'led', 'local-led', 'network'].includes(c.group));
+          const ledCrewByGroup = {};
+          ledCrewOnly.forEach(c => {
+            if (!ledCrewByGroup[c.group]) ledCrewByGroup[c.group] = [];
+            ledCrewByGroup[c.group].push(c);
+          });
+
+          let crewHtml = '';
+          ['led-lead', 'led', 'local-led', 'network'].forEach(g => {
+            const members = (ledCrewByGroup[g] || []);
+            if (members.length === 0) return;
+            const tags = members.map(c => {
+              const isAssignedHere = assigned.includes(c.idx);
+              const isAssignedElsewhere = !isAssignedHere && isAssignedAnywhere(c.idx, day.date);
+              const style = isAssignedHere
+                ? 'border: 2px solid #10B981; background: #D1FAE5;'
+                : isAssignedElsewhere
+                ? 'opacity: 0.3; text-decoration: line-through;'
+                : '';
+              return `<span class="crew-tag ${c.group}" style="${style}" onclick="toggleAssignment('${shift.id}', ${c.idx})" title="${c.name} — ${c.role}${c.pencilled ? ' (PENCILLED)' : ''}${isAssignedElsewhere ? ' (assigned to ' + getAssignedShiftOnDay(c.idx, day.date)?.label + ')' : ''}">
+                <span class="role-dot"></span>${c.short}${c.pencilled ? '*' : ''}
+              </span>`;
+            }).join('');
+            crewHtml += `<div style="margin-bottom:4px"><span style="font-size:10px;color:#9CA3AF;font-weight:600">${groupLabels[g]}</span><br>${tags}</div>`;
+          });
+
+          const assignedHtml = assigned.length > 0
+            ? `<div class="assignment-area has-items">${assigned.map(i =>
+                `<span class="assigned-tag" onclick="toggleAssignment('${shift.id}', ${i})"><span class="role-dot" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${
+                  CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
+                }"></span> ${CREW[i].short} <span class="remove">&times;</span></span>`
+              ).join('')}</div>`
+            : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
+
+          return `<div class="shift-block ${shift.cls}">
+            <div class="shift-label">${shift.label} <span class="time">${shift.time}</span></div>
+            <div class="shift-details">
+              <span class="loc">${shift.loc}</span>
+              ${encoreHtml}
+            </div>
+            <div class="crew-slots">
+              <h4>Available Crew (${ledCrewOnly.length})</h4>
+              ${crewHtml}
+              <h4 style="margin-top:8px">Assigned to This Shift (${assigned.length})</h4>
+              ${assignedHtml}
+            </div>
+          </div>`;
+        }).join('');
+
+        shiftsHtml += `<div class="dept-section">
+          <div class="dept-header led-dept">LED / Network Shifts</div>
+          <div class="shifts-grid ${ledGridClass}">${ledShiftsHtml}</div>
+        </div>`;
+      }
+    } else {
+      // Original rendering (no depts)
+      const gridClass = day.shifts.length === 3 ? 'three-col' : day.shifts.length === 2 ? 'two-col' : 'one-col';
+      const groupOrder = ['video', 'led-lead', 'led', 'local-led', 'network'];
+      const groupLabels = { 'video': 'Video', 'led-lead': 'LED Leads', 'led': 'LED Crew', 'local-led': 'Local LED', 'network': 'Network / Catwalk' };
+
+      shiftsHtml = day.shifts.map(shift => {
+        const assigned = assignments[shift.id];
+        const encoreHtml = (shift.encore.led > 0 || shift.encore.cat > 0)
+          ? `<div style="margin-top:4px">
+              ${shift.encore.led > 0 ? `<span class="encore-badge">Encore: ${shift.encore.led} LED hands</span> ` : ''}
+              ${shift.encore.cat > 0 ? `<span class="encore-badge">Encore: ${shift.encore.cat} Catwalk hands</span>` : ''}
+             </div>` : '';
+
+        let crewHtml = '';
+        groupOrder.forEach(g => {
+          const members = (availByGroup[g] || []);
+          if (members.length === 0) return;
+          const tags = members.map(c => {
+            const isAssignedHere = assigned.includes(c.idx);
+            const isAssignedElsewhere = !isAssignedHere && isAssignedAnywhere(c.idx, day.date);
+            const cls = isAssignedHere ? 'assigned-here' : isAssignedElsewhere ? 'assigned-elsewhere' : '';
+            const style = isAssignedHere
+              ? 'border: 2px solid #10B981; background: #D1FAE5;'
+              : isAssignedElsewhere
+              ? 'opacity: 0.3; text-decoration: line-through;'
+              : '';
+            return `<span class="crew-tag ${c.group}" style="${style}" onclick="toggleAssignment('${shift.id}', ${c.idx})" title="${c.name} — ${c.role}${c.pencilled ? ' (PENCILLED)' : ''}${isAssignedElsewhere ? ' (assigned to ' + getAssignedShiftOnDay(c.idx, day.date)?.label + ')' : ''}">
+              <span class="role-dot"></span>${c.short}${c.pencilled ? '*' : ''}
+            </span>`;
+          }).join('');
+          crewHtml += `<div style="margin-bottom:4px"><span style="font-size:10px;color:#9CA3AF;font-weight:600">${groupLabels[g]}</span><br>${tags}</div>`;
+        });
+
+        const assignedNames = assigned.map(i => CREW[i].short);
+        const assignedHtml = assigned.length > 0
+          ? `<div class="assignment-area has-items">${assigned.map(i =>
+              `<span class="assigned-tag" onclick="toggleAssignment('${shift.id}', ${i})"><span class="role-dot" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:${
+                CREW[i].group === 'video' ? '#3B82F6' : CREW[i].group === 'led-lead' ? '#F59E0B' : CREW[i].group === 'led' ? '#D97706' : CREW[i].group === 'local-led' ? '#EA580C' : '#10B981'
+              }"></span> ${CREW[i].short} <span class="remove">&times;</span></span>`
+            ).join('')}</div>`
+          : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
+
+        return `<div class="shift-block ${shift.cls}">
+          <div class="shift-label">${shift.label} <span class="time">${shift.time}</span></div>
+          <div class="shift-details">
+            <span class="loc">${shift.loc}</span>
+            ${encoreHtml}
+          </div>
+          <div class="crew-slots">
+            <h4>Available Crew (${availCrew.length})</h4>
+            ${crewHtml}
+            <h4 style="margin-top:8px">Assigned to This Shift (${assigned.length})</h4>
+            ${assignedHtml}
+          </div>
+        </div>`;
+      }).join('');
+
+      shiftsHtml = `<div class="shifts-grid ${gridClass}">${shiftsHtml}</div>`;
+    }
 
     const assignedOnDay = day.shifts.reduce((sum, s) => sum + assignments[s.id].length, 0);
 
@@ -429,7 +595,7 @@ function render() {
         </div>
       </div>
       <div class="day-body">
-        <div class="shifts-grid ${gridClass}">${shiftsHtml}</div>
+        ${shiftsHtml}
       </div>
     </div>`;
   });
