@@ -85,6 +85,10 @@
   .dept-header.video-dept { background: #DBEAFE; color: #1E40AF; }
   .dept-header.led-dept { background: #FEF3C7; color: #92400E; }
 
+  /* Shift goals */
+  .shift-goals { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .goal-tag { display: inline-block; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #166534; font-weight: 500; }
+
   /* Assignment area */
   .assignment-area { margin-top: 8px; min-height: 36px; border: 2px dashed #D1D5DB; border-radius: 6px; padding: 6px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; transition: all 0.15s; }
   .assignment-area.has-items { border-color: #10B981; background: #F0FDF4; }
@@ -187,25 +191,25 @@ const DAYS = [
     shifts: [
       { id:'0430VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Hall B', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0430VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall B', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0430A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall B', cls:'shift-a', dept:'led', encore: {led:8, cat:8} },
-      { id:'0430B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall B', cls:'shift-b', dept:'led', encore: {led:8, cat:8} },
-      { id:'0430C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall B', cls:'shift-c', dept:'led', encore: {led:8, cat:8} },
+      { id:'0430A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall B', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['B1 (complete by 6a)', 'C (start → 12p)', 'D (complete by 8a)', 'Fuse Truck Zones 1+2', 'Start H+I at 8a'] },
+      { id:'0430B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall B', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['H+I (main focus, 8a–8p)', 'Finish C by 12p'] },
+      { id:'0430C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall B', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['Finish H+I by 8p', 'M1+M2+M3 (6p–12a)'] },
     ]},
   { date: new Date(2026,4,1), label: 'Thu 5/1', title: 'Hall C/D Install', phase: 'install',
     shifts: [
       { id:'0501VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Hall C/D', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0501VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall C/D', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8} },
-      { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8} },
-      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8} },
+      { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['N (12a–10a)', 'K (start 4a)', 'L2 LED (4a–8a)', 'J floors LED (4a–8a, before carpet)', 'Fuse Truck Zone 5'] },
+      { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['Finish N+K by 12p', 'E+F (start 12p–10p)'] },
+      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['Finish E+F by 10p', 'Start B2 (10p overnight)'] },
     ]},
   { date: new Date(2026,4,2), label: 'Fri 5/2', title: 'Foyer + Exhibit Floor', phase: 'install',
     shifts: [
       { id:'0502VA', label:'Shift A', time:'5:00a – 3:00p', loc:'Foyer + Exhibit', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0502VB', label:'Shift B', time:'6:00a – 5:00p', loc:'Foyer + Exhibit', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
       { id:'0502VC', label:'Shift C', time:'2:00p – 1:00a', loc:'Foyer + Exhibit', cls:'shift-c', dept:'video', encore: {led:0, cat:0} },
-      { id:'0502A', label:'Shift A', time:'12:00a – 11:00a', loc:'Foyer Lvl 2', cls:'shift-a', dept:'led', encore: {led:4, cat:0} },
-      { id:'0502B', label:'Shift B', time:'8:00a – 7:00p', loc:'Exhibit Floor', cls:'shift-b', dept:'led', encore: {led:4, cat:0} },
+      { id:'0502A', label:'Shift A', time:'12:00a – 11:00a', loc:'Foyer Lvl 2', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['Finish B2 (from overnight)', 'Area O (12a–12p, main focus)'] },
+      { id:'0502B', label:'Shift B', time:'8:00a – 7:00p', loc:'Exhibit Floor', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['Finish O by 12p', 'Fuse Truck Zone 6'] },
     ]},
   { date: new Date(2026,4,3), label: 'Sat 5/3', title: 'Expo Hall Install', phase: 'install',
     shifts: [
@@ -438,6 +442,7 @@ function render() {
             <div class="shift-details">
               <span class="loc">${shift.loc}</span>
               ${encoreHtml}
+              ${shift.goals && shift.goals.length > 0 ? '<div class="shift-goals">' + shift.goals.map(g => '<span class="goal-tag">' + g + '</span>').join('') + '</div>' : ''}
             </div>
             <div class="crew-slots">
               <h4>Available Crew (${videoCrewOnly.length})</h4>
@@ -506,6 +511,7 @@ function render() {
             <div class="shift-details">
               <span class="loc">${shift.loc}</span>
               ${encoreHtml}
+              ${shift.goals && shift.goals.length > 0 ? '<div class="shift-goals">' + shift.goals.map(g => '<span class="goal-tag">' + g + '</span>').join('') + '</div>' : ''}
             </div>
             <div class="crew-slots">
               <h4>Available Crew (${ledCrewOnly.length})</h4>
@@ -569,6 +575,7 @@ function render() {
           <div class="shift-details">
             <span class="loc">${shift.loc}</span>
             ${encoreHtml}
+            ${shift.goals && shift.goals.length > 0 ? '<div class="shift-goals">' + shift.goals.map(g => '<span class="goal-tag">' + g + '</span>').join('') + '</div>' : ''}
           </div>
           <div class="crew-slots">
             <h4>Available Crew (${availCrew.length})</h4>
