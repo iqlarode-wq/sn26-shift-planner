@@ -302,10 +302,12 @@ function toggleAssignment(shiftId, crewIdx) {
 }
 
 // --- Clear assignments ---
-function clearDeptAssignments(dept) {
-  DAYS.forEach(d => d.shifts.forEach(s => {
+function clearDeptAssignments(dept, dayIdx) {
+  const day = DAYS[dayIdx];
+  if (!day) return;
+  day.shifts.forEach(s => {
     if (s.dept === dept) assignments[s.id] = [];
-  }));
+  });
   saveAssignments();
   render();
 }
@@ -394,7 +396,7 @@ function render() {
 
   // Days
   let daysHtml = '';
-  DAYS.forEach(day => {
+  DAYS.forEach((day, dayIdx) => {
     const show = filter === 'all' || filter === day.phase;
     const availCrew = CREW.map((c, i) => ({ ...c, idx: i })).filter(c => isAvailable(c, day.date));
     const availByGroup = {};
@@ -477,7 +479,7 @@ function render() {
         }).join('');
 
         shiftsHtml += `<div class="dept-section">
-          <div class="dept-section-header"><div class="dept-header video-dept">Video Shifts</div><button class="clear-btn" onclick="event.stopPropagation(); clearDeptAssignments('video')">Clear Video</button></div>
+          <div class="dept-section-header"><div class="dept-header video-dept">Video Shifts</div><button class="clear-btn" onclick="event.stopPropagation(); clearDeptAssignments('video', ${dayIdx})">Clear Video</button></div>
           <div class="shifts-grid ${videoGridClass}">${videoShiftsHtml}</div>
         </div>`;
       }
@@ -546,7 +548,7 @@ function render() {
         }).join('');
 
         shiftsHtml += `<div class="dept-section">
-          <div class="dept-section-header"><div class="dept-header led-dept">LED / Network Shifts</div><button class="clear-btn" onclick="event.stopPropagation(); clearDeptAssignments('led')">Clear LED</button></div>
+          <div class="dept-section-header"><div class="dept-header led-dept">LED / Network Shifts</div><button class="clear-btn" onclick="event.stopPropagation(); clearDeptAssignments('led', ${dayIdx})">Clear LED</button></div>
           <div class="shifts-grid ${ledGridClass}">${ledShiftsHtml}</div>
         </div>`;
       }
