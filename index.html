@@ -144,7 +144,13 @@
   <button data-filter="show">Show (5/5–5/7)</button>
   <button data-filter="strike">Strike (5/8–5/9)</button>
   <span style="flex:1"></span>
+  <button style="background:#3B82F6;color:white;border-color:#3B82F6;font-weight:600" onclick="saveSnapshot()">Save Snapshot</button>
+  <div style="position:relative;display:inline-block">
+    <button style="background:#8B5CF6;color:white;border-color:#8B5CF6;font-weight:600" onclick="toggleRestoreMenu()">Restore <span style="font-size:10px">&#9660;</span></button>
+    <div id="restoreMenu" style="display:none;position:absolute;right:0;top:100%;margin-top:4px;background:white;border:1px solid #D1D5DB;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:200;min-width:260px;max-height:320px;overflow-y:auto"></div>
+  </div>
   <button style="background:#EF4444;color:white;border-color:#EF4444;font-weight:600" onclick="clearAllAssignments()">Clear All</button>
+  <button style="background:#F59E0B;color:white;border-color:#F59E0B;font-weight:600" onclick="undoLastClear()">Undo</button>
   <button id="exportCsv" style="background:#10B981;color:white;border-color:#10B981;font-weight:600" onclick="exportCSV()">Export CSV</button>
 </div>
 
@@ -301,10 +307,72 @@ function toggleAssignment(shiftId, crewIdx) {
   render();
 }
 
-// --- Clear assignments ---
+// --- Snapshot / History system ---
+const MAX_SNAPSHOTS = 20;
+let lastUndo = null; // stores state before last clear for quick undo
+
+function getSnapshots() {
+  try { return JSON.parse(localStorage.getItem('sn26_snapshots') || '[]'); } catch(e) { return []; }
+}
+function saveSnapshotData(label) {
+  const snaps = getSnapshots();
+  const now = new Date();
+  const ts = now.toLocaleDateString('en-US', {month:'short',day:'numeric'}) + ' ' + now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit'});
+  snaps.unshift({ label: label || 'Manual save', ts, data: JSON.parse(JSON.stringify(assignments)) });
+  if (snaps.length > MAX_SNAPSHOTS) snaps.length = MAX_SNAPSHOTS;
+  try { localStorage.setItem('sn26_snapshots', JSON.stringify(snaps)); } catch(e) {}
+}
+function saveSnapshot() {
+  saveSnapshotData('Manual save');
+  renderRestoreMenu();
+  alert('Snapshot saved!');
+}
+function restoreSnapshot(idx) {
+  const snaps = getSnapshots();
+  if (!snaps[idx]) return;
+  // Save current state as undo point first
+  lastUndo = JSON.parse(JSON.stringify(assignments));
+  const data = snaps[idx].data;
+  for (const shiftId of Object.keys(assignments)) {
+    assignments[shiftId] = Array.isArray(data[shiftId]) ? data[shiftId].filter(i => Number.isInteger(i) && i >= 0 && i < CREW.length) : [];
+  }
+  saveAssignments();
+  render();
+  document.getElementById('restoreMenu').style.display = 'none';
+}
+function toggleRestoreMenu() {
+  const menu = document.getElementById('restoreMenu');
+  if (menu.style.display === 'none') { renderRestoreMenu(); menu.style.display = 'block'; }
+  else { menu.style.display = 'none'; }
+}
+function renderRestoreMenu() {
+  const snaps = getSnapshots();
+  const menu = document.getElementById('restoreMenu');
+  if (snaps.length === 0) {
+    menu.innerHTML = '<div style="padding:12px;font-size:12px;color:#9CA3AF">No snapshots yet</div>';
+    return;
+  }
+  menu.innerHTML = snaps.map((s, i) =>
+    `<div style="padding:8px 12px;border-bottom:1px solid #F3F4F6;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;align-items:center" onmouseenter="this.style.background='#EEF2FF'" onmouseleave="this.style.background='white'" onclick="restoreSnapshot(${i})">
+      <div><strong>${s.label}</strong><br><span style="color:#9CA3AF;font-size:11px">${s.ts}</span></div>
+      <span style="color:#8B5CF6;font-weight:600;font-size:11px">Restore</span>
+    </div>`
+  ).join('');
+}
+// Close menu on outside click
+document.addEventListener('click', e => {
+  const menu = document.getElementById('restoreMenu');
+  if (menu && menu.style.display === 'block' && !e.target.closest('#restoreMenu') && !e.target.closest('[onclick*="toggleRestoreMenu"]')) {
+    menu.style.display = 'none';
+  }
+});
+
+// --- Clear assignments (with auto-snapshot + undo) ---
 function clearDeptAssignments(dept, dayIdx) {
   const day = DAYS[dayIdx];
   if (!day) return;
+  saveSnapshotData('Before clear ' + dept + ' on ' + day.label);
+  lastUndo = JSON.parse(JSON.stringify(assignments));
   day.shifts.forEach(s => {
     if (s.dept === dept) assignments[s.id] = [];
   });
@@ -313,7 +381,20 @@ function clearDeptAssignments(dept, dayIdx) {
 }
 
 function clearAllAssignments() {
+  saveSnapshotData('Before clear all');
+  lastUndo = JSON.parse(JSON.stringify(assignments));
   Object.keys(assignments).forEach(k => assignments[k] = []);
+  saveAssignments();
+  render();
+}
+
+function undoLastClear() {
+  if (!lastUndo) return;
+  const data = lastUndo;
+  lastUndo = JSON.parse(JSON.stringify(assignments)); // allow re-undo toggle
+  for (const shiftId of Object.keys(assignments)) {
+    assignments[shiftId] = Array.isArray(data[shiftId]) ? data[shiftId] : [];
+  }
   saveAssignments();
   render();
 }
@@ -479,7 +560,7 @@ function render() {
         }).join('');
 
         shiftsHtml += `<div class="dept-section">
-          <div class="dept-section-header"><div class="dept-header video-dept">Video Shifts</div><button class="clear-btn" onclick="event.stopPropagation(); clearDeptAssignments('video', ${dayIdx})">Clear Video</button></div>
+          <div class="dept-section-header"><div class="dept-header video-dept">Video Shifts</div><button class="clear-btn" onclick="event.stopPropagation(); clearDeptAssignments('video', ${dayIdx})">Clear Video</button><button class="clear-btn" style="background:#FEF3C7;color:#92400E;border-color:#F59E0B" onclick="event.stopPropagation(); undoLastClear()">Undo</button></div>
           <div class="shifts-grid ${videoGridClass}">${videoShiftsHtml}</div>
         </div>`;
       }
@@ -548,7 +629,7 @@ function render() {
         }).join('');
 
         shiftsHtml += `<div class="dept-section">
-          <div class="dept-section-header"><div class="dept-header led-dept">LED / Network Shifts</div><button class="clear-btn" onclick="event.stopPropagation(); clearDeptAssignments('led', ${dayIdx})">Clear LED</button></div>
+          <div class="dept-section-header"><div class="dept-header led-dept">LED / Network Shifts</div><button class="clear-btn" onclick="event.stopPropagation(); clearDeptAssignments('led', ${dayIdx})">Clear LED</button><button class="clear-btn" style="background:#FEF3C7;color:#92400E;border-color:#F59E0B" onclick="event.stopPropagation(); undoLastClear()">Undo</button></div>
           <div class="shifts-grid ${ledGridClass}">${ledShiftsHtml}</div>
         </div>`;
       }
