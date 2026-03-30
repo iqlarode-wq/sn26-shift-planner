@@ -152,7 +152,9 @@
   <button data-filter="show">Show (5/5–5/7)</button>
   <button data-filter="strike">Strike (5/8–5/9)</button>
   <span style="flex:1"></span>
-  <button style="background:#3B82F6;color:white;border-color:#3B82F6;font-weight:600" onclick="saveSnapshot()">Save Snapshot</button>
+  <button style="background:#3B82F6;color:white;border-color:#3B82F6;font-weight:600" onclick="saveSnapshot()">Save</button>
+  <button style="background:#1D4ED8;color:white;border-color:#1D4ED8;font-weight:600" onclick="downloadSnapshot()">Download</button>
+  <label style="background:#6366F1;color:white;border:1px solid #6366F1;border-radius:6px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer">Import<input type="file" accept=".json" onchange="importSnapshot(event)" style="display:none"></label>
   <div style="position:relative;display:inline-block">
     <button style="background:#8B5CF6;color:white;border-color:#8B5CF6;font-weight:600" onclick="toggleRestoreMenu()">Restore <span style="font-size:10px">&#9660;</span></button>
     <div id="restoreMenu" style="display:none;position:absolute;right:0;top:100%;margin-top:4px;background:white;border:1px solid #D1D5DB;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:200;min-width:260px;max-height:320px;overflow-y:auto"></div>
@@ -223,7 +225,7 @@ const DAYS = [
       { id:'0501VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall C/D', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
       { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['N (12a–8a/10a)', 'K (4a–10a/12p)', 'L2: Vista 3 LED (4a–8a/10a)', 'J: Convex/Concave Circle floor LED (4a–8a, before carpet)', 'Fuse Truck Zone 5 (12a–8a)'] },
       { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['Finish N by 10a, K by 12p', 'E: Banner3, Kinetic + F: Banner5 (start 12p, continues to 10p → Shift C)'] },
-      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['Finish E: Banner3, Kinetic + F: Banner5 by 10p', 'Fuse Truck Zone 6 (10p–12a)', 'Start B2: SSTotem area (10p overnight)'] },
+      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['Finish E: Banner3, Kinetic + F: Banner5 by 10p', 'Start B2: SSTotem area (10p overnight)'] },
     ]},
   { date: new Date(2026,4,2), label: 'Fri 5/2', title: 'Foyer + Exhibit Floor', phase: 'install',
     shifts: [
@@ -348,6 +350,55 @@ function restoreSnapshot(idx) {
   render();
   document.getElementById('restoreMenu').style.display = 'none';
 }
+function downloadSnapshot() {
+  const now = new Date();
+  const ts = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+  const payload = { version: 1, ts: now.toISOString(), assignments: JSON.parse(JSON.stringify(assignments)) };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `SN26_Snapshot_${ts}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Snapshot downloaded');
+}
+
+function importSnapshot(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const payload = JSON.parse(e.target.result);
+      const data = payload.assignments || payload;
+      // Validate structure
+      const validShiftIds = new Set(Object.keys(assignments));
+      let matched = 0;
+      for (const key of Object.keys(data)) {
+        if (validShiftIds.has(key) && Array.isArray(data[key])) matched++;
+      }
+      if (matched === 0) { showToast('Invalid snapshot file — no matching shifts found'); return; }
+      // Save current state first
+      saveSnapshotData('Before import');
+      lastUndo = JSON.parse(JSON.stringify(assignments));
+      for (const shiftId of Object.keys(assignments)) {
+        assignments[shiftId] = Array.isArray(data[shiftId]) ? data[shiftId].filter(i => Number.isInteger(i) && i >= 0 && i < CREW.length) : [];
+      }
+      saveAssignments();
+      render();
+      const ts = payload.ts ? ' from ' + new Date(payload.ts).toLocaleDateString() : '';
+      showToast(`Imported snapshot${ts} — ${matched} shifts restored`);
+    } catch(err) {
+      showToast('Failed to read snapshot file');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; // reset so same file can be re-imported
+}
+
 function toggleRestoreMenu() {
   const menu = document.getElementById('restoreMenu');
   if (menu.style.display === 'none') { renderRestoreMenu(); menu.style.display = 'block'; }
