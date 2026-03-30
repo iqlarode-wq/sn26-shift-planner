@@ -96,6 +96,14 @@
   .shift-goals { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
   .goal-tag { display: inline-block; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #166534; font-weight: 500; }
 
+  /* Copy/Paste buttons */
+  .cp-btn { display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid;margin-left:4px;vertical-align:middle;transition:all 0.15s; }
+  .cp-btn.copy { background:#EEF2FF;color:#4338CA;border-color:#A5B4FC; }
+  .cp-btn.copy:hover { background:#C7D2FE; }
+  .cp-btn.paste { background:#FEF3C7;color:#92400E;border-color:#FCD34D; }
+  .cp-btn.paste:hover { background:#FDE68A; }
+  .clipboard-banner { font-size:11px;color:#4338CA;background:#EEF2FF;border:1px solid #A5B4FC;border-radius:4px;padding:3px 10px;display:inline-block;margin-left:8px;font-weight:600; }
+
   /* Assignment area */
   .assignment-area { margin-top: 8px; min-height: 36px; border: 2px dashed #D1D5DB; border-radius: 6px; padding: 6px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; transition: all 0.15s; }
   .assignment-area.has-items { border-color: #10B981; background: #F0FDF4; }
@@ -391,12 +399,68 @@ function clearAllAssignments() {
 function undoLastClear() {
   if (!lastUndo) return;
   const data = lastUndo;
-  lastUndo = JSON.parse(JSON.stringify(assignments)); // allow re-undo toggle
+  lastUndo = JSON.parse(JSON.stringify(assignments));
   for (const shiftId of Object.keys(assignments)) {
     assignments[shiftId] = Array.isArray(data[shiftId]) ? data[shiftId] : [];
   }
   saveAssignments();
   render();
+}
+
+// --- Copy / Paste shifts ---
+let clipboard = null; // { crewIndices: [], label: '' }
+
+function copyShift(shiftId) {
+  const shift = null;
+  let shiftLabel = shiftId;
+  DAYS.forEach(d => d.shifts.forEach(s => { if (s.id === shiftId) shiftLabel = d.label + ' ' + s.label; }));
+  clipboard = { crewIndices: [...assignments[shiftId]], label: shiftLabel };
+  render();
+}
+
+function pasteShift(shiftId, dayIdx) {
+  if (!clipboard || clipboard.crewIndices.length === 0) return;
+  const day = DAYS[dayIdx];
+  if (!day) return;
+  saveSnapshotData('Before paste to ' + day.label);
+  lastUndo = JSON.parse(JSON.stringify(assignments));
+
+  let pasted = 0, skipped = 0;
+  const newAssignment = [];
+  clipboard.crewIndices.forEach(ci => {
+    if (isAvailable(CREW[ci], day.date)) {
+      // Remove from other shifts on this day first
+      day.shifts.forEach(s => {
+        const idx = assignments[s.id].indexOf(ci);
+        if (idx >= 0) assignments[s.id].splice(idx, 1);
+      });
+      newAssignment.push(ci);
+      pasted++;
+    } else {
+      skipped++;
+    }
+  });
+  assignments[shiftId] = newAssignment;
+  saveAssignments();
+  render();
+
+  if (skipped > 0) {
+    const msg = `Pasted ${pasted} crew from ${clipboard.label}. ${skipped} skipped (not available on ${day.label}).`;
+    showToast(msg);
+  }
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1F2937;color:white;padding:10px 20px;border-radius:8px;font-size:13px;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:opacity 0.3s;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  setTimeout(() => { toast.style.opacity = '0'; }, 3500);
 }
 
 // --- localStorage persistence ---
@@ -473,6 +537,7 @@ function render() {
     <div class="summary-stat"><div class="num">${CREW.length}</div><div class="label">Crew Members</div></div>
     <div class="summary-stat"><div class="num" style="color:${totalAssigned > 0 ? '#10B981' : '#6B7280'}">${totalAssigned}</div><div class="label">Assigned Slots</div></div>
     <div class="summary-stat"><div class="num" style="color:#F59E0B">${unassignedCrew}</div><div class="label">Unassigned Person-Days</div></div>
+    ${clipboard ? '<div class="summary-stat" style="margin-left:auto"><div class="clipboard-banner">Clipboard: ' + clipboard.crewIndices.length + ' crew from ' + clipboard.label + '</div></div>' : ''}
   `;
 
   // Days
@@ -544,7 +609,7 @@ function render() {
             : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
 
           return `<div class="shift-block ${shift.cls}">
-            <div class="shift-label">${shift.label} <span class="time">${shift.time}</span></div>
+            <div class="shift-label">${shift.label} <span class="time">${shift.time}</span> <span style="margin-left:auto;display:flex;gap:3px"><span class="cp-btn copy" onclick="event.stopPropagation();copyShift('${shift.id}')" title="Copy crew from this shift">Copy</span>${clipboard ? '<span class=\"cp-btn paste\" onclick=\"event.stopPropagation();pasteShift(\'' + shift.id + '\',' + dayIdx + ')\" title=\"Paste crew from ' + clipboard.label + '\">Paste</span>' : ''}</span></div>
             <div class="shift-details">
               <span class="loc">${shift.loc}</span>
               ${encoreHtml}
@@ -613,7 +678,7 @@ function render() {
             : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
 
           return `<div class="shift-block ${shift.cls}">
-            <div class="shift-label">${shift.label} <span class="time">${shift.time}</span></div>
+            <div class="shift-label">${shift.label} <span class="time">${shift.time}</span> <span style="margin-left:auto;display:flex;gap:3px"><span class="cp-btn copy" onclick="event.stopPropagation();copyShift('${shift.id}')" title="Copy crew from this shift">Copy</span>${clipboard ? '<span class=\"cp-btn paste\" onclick=\"event.stopPropagation();pasteShift(\'' + shift.id + '\',' + dayIdx + ')\" title=\"Paste crew from ' + clipboard.label + '\">Paste</span>' : ''}</span></div>
             <div class="shift-details">
               <span class="loc">${shift.loc}</span>
               ${encoreHtml}
@@ -677,7 +742,7 @@ function render() {
           : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
 
         return `<div class="shift-block ${shift.cls}">
-          <div class="shift-label">${shift.label} <span class="time">${shift.time}</span></div>
+          <div class="shift-label">${shift.label} <span class="time">${shift.time}</span> <span style="margin-left:auto;display:flex;gap:3px"><span class="cp-btn copy" onclick="event.stopPropagation();copyShift('${shift.id}')" title="Copy crew from this shift">Copy</span>${clipboard ? '<span class=\"cp-btn paste\" onclick=\"event.stopPropagation();pasteShift(\'' + shift.id + '\',' + dayIdx + ')\" title=\"Paste crew from ' + clipboard.label + '\">Paste</span>' : ''}</span></div>
           <div class="shift-details">
             <span class="loc">${shift.loc}</span>
             ${encoreHtml}
