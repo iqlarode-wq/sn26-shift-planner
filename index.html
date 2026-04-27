@@ -18,7 +18,7 @@
   .header h1 { font-size: 20px; font-weight: 700; }
   .header p { font-size: 13px; color: #9CA3AF; margin-top: 4px; }
 
-  .controls { background: white; border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 72px; z-index: 99; }
+  .controls { background: white; border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 102px; z-index: 99; }
   .controls button { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: white; font-size: 13px; cursor: pointer; transition: all 0.15s; }
   .controls button:hover { background: var(--blue); }
   .controls button.active { background: var(--dark); color: white; border-color: var(--dark); }
@@ -35,6 +35,7 @@
   .day-body { padding: 0 20px 20px; }
 
   /* Phase colors */
+  .phase-btc .day-header { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
   .phase-install .day-header { background: linear-gradient(135deg, #EDE9FE, #DBEAFE); }
   .phase-show .day-header { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
   .phase-strike .day-header { background: linear-gradient(135deg, #FEE2E2, #FECACA); }
@@ -61,7 +62,7 @@
   .crew-slots { padding: 10px 14px; }
   .crew-slots h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #9CA3AF; margin-bottom: 6px; }
 
-  .crew-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 12px; margin: 2px; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+  .crew-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; font-size: 11px; margin: 2px; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
   .crew-tag:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   .crew-tag.assigned { opacity: 0.4; text-decoration: line-through; }
 
@@ -131,11 +132,78 @@
   .roster-person .dates { font-size: 11px; color: #9CA3AF; }
   .roster-person .shift-count { font-size: 11px; background: #E5E7EB; padding: 1px 6px; border-radius: 8px; }
 
+  /* Page navigation */
+  .page-nav { display: flex; gap: 4px; margin-top: 10px; }
+  .page-nav button { padding: 6px 16px; border-radius: 6px 6px 0 0; border: 1px solid #4B5563; border-bottom: none; background: #374151; color: #9CA3AF; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .page-nav button:hover { background: #4B5563; color: white; }
+  .page-nav button.active { background: #F3F4F6; color: var(--dark); border-color: #E5E7EB; }
+  .page-section.hidden { display: none; }
+
+  /* LED Count page */
+  .led-count-container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+  .led-summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .led-summary-card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
+  .led-summary-card .big { font-size: 28px; font-weight: 700; }
+  .led-summary-card .sub { font-size: 11px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+  .tile-type-group { background: white; border-radius: 12px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .tile-type-header { padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  .tile-type-header h3 { font-size: 15px; font-weight: 700; }
+  .tile-type-header .tile-stats { display: flex; gap: 16px; font-size: 13px; }
+  .tile-type-header .tile-stats span { display: flex; align-items: center; gap: 4px; }
+  .tile-type-body { padding: 0 20px 16px; }
+
+  .led-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .led-table th { text-align: left; padding: 8px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #6B7280; border-bottom: 2px solid var(--border); }
+  .led-table td { padding: 8px 10px; border-bottom: 1px solid #F3F4F6; }
+  .led-table tr:last-child td { border-bottom: none; }
+  .led-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .led-table .total-row td { font-weight: 700; border-top: 2px solid var(--border); background: #F9FAFB; }
+
+  .order-input { width: 70px; padding: 4px 8px; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; background: #FFFBEB; }
+  .order-input:focus { outline: none; border-color: #3B82F6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+
+  .spare-positive { color: #059669; font-weight: 600; }
+  .spare-negative { color: #DC2626; font-weight: 600; }
+  .spare-zero { color: #6B7280; }
+  .spare-pct { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .spare-pct.good { background: #D1FAE5; color: #065F46; }
+  .spare-pct.warn { background: #FEF3C7; color: #92400E; }
+  .spare-pct.bad { background: #FEE2E2; color: #991B1B; }
+  .spare-pct.none { background: #F3F4F6; color: #6B7280; }
+
+  .type-color { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+
+  /* Custom Schedule Section */
+  .custom-sched-section { background: #F5F3FF; border: 2px solid #DDD6FE; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+  .custom-sched-section h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6D28D9; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .custom-sched-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: white; border-radius: 8px; margin-bottom: 6px; border: 1px solid #E5E7EB; flex-wrap: wrap; }
+  .custom-sched-row:last-child { margin-bottom: 0; }
+  .custom-sched-name { font-size: 13px; font-weight: 700; color: var(--dark); min-width: 120px; }
+  .custom-sched-name .role-label { font-size: 11px; font-weight: 400; color: #6B7280; }
+  .custom-time-input { width: 80px; padding: 4px 8px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px; text-align: center; background: #FFFBEB; }
+  .custom-time-input:focus { outline: none; border-color: #8B5CF6; box-shadow: 0 0 0 2px rgba(139,92,246,0.2); }
+  .custom-sched-arrow { color: #9CA3AF; font-size: 14px; }
+  .custom-sched-lunch { display: inline-flex; align-items: center; gap: 4px; background: #FEF3C7; border: 1px solid #FCD34D; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; color: #92400E; }
+  .custom-sched-off { font-size: 12px; color: #9CA3AF; font-style: italic; }
+
+  /* Lunch Timeline Bar */
+  .lunch-timeline-wrap { margin-top: 8px; }
+  .lunch-timeline { display: flex; height: 20px; border-radius: 6px; overflow: hidden; background: #F3F4F6; font-size: 10px; font-weight: 600; width: 100%; }
+  .lunch-tl-work { background: #DBEAFE; color: #1E40AF; display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; }
+  .lunch-tl-lunch { background: #FEF3C7; color: #92400E; display: flex; align-items: center; justify-content: center; min-width: 50px; border-left: 2px solid #FCD34D; border-right: 2px solid #FCD34D; white-space: nowrap; }
+  .lunch-tl-work2 { background: #D1FAE5; color: #065F46; display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; }
+  .lunch-badge { display: inline-flex; align-items: center; gap: 4px; background: #FEF3C7; border: 1px solid #FCD34D; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; color: #92400E; margin-top: 4px; }
+
   @media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
     .roster { position: relative; top: 0; }
     .shifts-grid.three-col { grid-template-columns: 1fr; }
     .shifts-grid.two-col { grid-template-columns: 1fr; }
+    .led-summary-cards { grid-template-columns: repeat(2, 1fr); }
+    .led-table { font-size: 12px; }
+    .led-table th, .led-table td { padding: 6px 6px; }
+    .order-input { width: 56px; }
   }
 </style>
 </head>
@@ -144,8 +212,13 @@
 <div class="header">
   <h1>SN26 Shift Planner</h1>
   <p>Video / LED / Network Crew — Apr 30 – May 9, 2026 &nbsp;|&nbsp; Click crew names to assign to shifts</p>
+  <div class="page-nav">
+    <button class="active" onclick="switchPage('shifts')">Shift Planner</button>
+    <button onclick="switchPage('ledcount')">LED Count</button>
+  </div>
 </div>
 
+<div id="page-shifts" class="page-section">
 <div class="controls" id="controls">
   <button class="active" data-filter="all">All Days</button>
   <button data-filter="install">Install (4/30–5/4)</button>
@@ -174,73 +247,392 @@
   </div>
 </div>
 
+</div><!-- end page-shifts -->
+
+<div id="page-ledcount" class="page-section hidden">
+  <div class="led-count-container">
+    <div class="led-summary-cards" id="led-summary"></div>
+    <div id="led-type-groups"></div>
+  </div>
+</div>
+
 <script>
+function switchPage(page) {
+  document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.page-nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.remove('hidden');
+  document.querySelector('.page-nav button[onclick="switchPage(\'' + page + '\')"]').classList.add('active');
+  if (page === 'ledcount') renderLedCount();
+}
+
+// ===== LED COUNT DATA =====
+const LED_WALLS = [
+  { name: 'Concave Curve', type: 'Topaz 2.6', processor: 'Brompton SX40', proc: '1ABCD', tilesW: 27, tilesH: 4, dims: '44.29\' W x 6.56\' H', resolution: '5184W x 768H' },
+  { name: 'Convex Curve', type: 'Topaz 2.6', processor: 'Brompton SX40', proc: '2ABCD', tilesW: 28, tilesH: 4, dims: '45.93\' W x 6.56\' H', resolution: '5376W x 768H' },
+  { name: 'Totem A', type: 'Recience 2.06', processor: 'Brompton SX40', proc: '3AB', tilesW: 5, tilesH: 12, dims: '8.14\' W x 19.53\' H', resolution: '1200W x 2880H' },
+  { name: 'Totem B', type: 'Recience 2.06', processor: 'Brompton SX40', proc: '4AB', tilesW: 5, tilesH: 12, dims: '8.14\' W x 19.53\' H', resolution: '1200W x 2880H' },
+  { name: 'DS Banner 1', type: 'CB5 MK2', processor: 'Brompton SX40', proc: '5AB', tilesW: 16, tilesH: 2, sides: 2, dims: '31.5\' W x 7.87\' H', resolution: '1664W x 416H' },
+  { name: 'DS Banner 2', type: 'CB5 MK2', processor: 'Brompton SX40', proc: '5CD', tilesW: 16, tilesH: 2, sides: 2, dims: '31.5\' W x 7.87\' H', resolution: '1664W x 416H' },
+  { name: 'DS Banner 3', type: 'CB5 MK2', processor: 'Brompton SX40', proc: '6AB', tilesW: 16, tilesH: 2, sides: 2, dims: '31.5\' W x 7.87\' H', resolution: '1664W x 416H' },
+  { name: 'DS Banner 4', type: 'CB5 MK2', processor: 'Brompton SX40', proc: '6CD', tilesW: 16, tilesH: 2, sides: 2, dims: '31.5\' W x 7.87\' H', resolution: '1664W x 416H' },
+  { name: 'DS Banner 5', type: 'CB5 MK2', processor: 'Brompton SX40', proc: '7AB', tilesW: 16, tilesH: 2, sides: 2, dims: '31.5\' W x 7.87\' H', resolution: '1664W x 416H' },
+  { name: 'Pill 1', type: 'Graphite 2mm', processor: 'Brompton SX40', proc: '8ABCD', tilesW: 4, tilesH: 3.5, dims: '6.56\' W x 11.48\' H', resolution: '768W x 1344H', breakdown: [{label:'Full',count:16},{label:'Half',count:8},{label:'Rounded Left Top',count:2},{label:'Rounded Right Top',count:2},{label:'Rounded Left Bottom',count:2},{label:'Rounded Right Bottom',count:2}] },
+  { name: 'Pill 2', type: 'Graphite 2mm', processor: 'Brompton SX40', proc: '8ABCD', tilesW: 4, tilesH: 3.5, dims: '6.56\' W x 11.48\' H', resolution: '768W x 1344H', breakdown: [{label:'Full',count:16},{label:'Half',count:8},{label:'Rounded Left Top',count:2},{label:'Rounded Right Top',count:2},{label:'Rounded Left Bottom',count:2},{label:'Rounded Right Bottom',count:2}] },
+  { name: 'Pill 3', type: 'Graphite 2mm', processor: 'Brompton SX40', proc: '9ABCD', tilesW: 4, tilesH: 3.5, dims: '6.56\' W x 11.48\' H', resolution: '768W x 1344H', breakdown: [{label:'Full',count:16},{label:'Half',count:8},{label:'Rounded Left Top',count:2},{label:'Rounded Right Top',count:2},{label:'Rounded Left Bottom',count:2},{label:'Rounded Right Bottom',count:2}] },
+  { name: 'Pill 4', type: 'Graphite 2mm', processor: 'Brompton SX40', proc: '9ABCD', tilesW: 4, tilesH: 3.5, dims: '6.56\' W x 11.48\' H', resolution: '768W x 1344H', breakdown: [{label:'Full',count:16},{label:'Half',count:8},{label:'Rounded Left Top',count:2},{label:'Rounded Right Top',count:2},{label:'Rounded Left Bottom',count:2},{label:'Rounded Right Bottom',count:2}] },
+  { name: 'Vista 1', type: 'CB5', processor: 'Brompton SX40', proc: '10AB', tilesW: 20, tilesH: 2.5, dims: '39.37\' W x 9.84\' H', resolution: '2080W x 520H', breakdown: [{label:'Full',count:40},{label:'Half',count:20}] },
+  { name: 'Vista 2', type: 'CB5', processor: 'Brompton SX40', proc: '10CD', tilesW: 20, tilesH: 2.5, dims: '39.37\' W x 9.84\' H', resolution: '2080W x 520H', breakdown: [{label:'Full',count:40},{label:'Half',count:20}] },
+  { name: 'Vista 3', type: 'CB5', processor: 'Brompton SX40', proc: '11AB', tilesW: 20, tilesH: 2.5, dims: '39.37\' W x 9.84\' H', resolution: '2080W x 520H', breakdown: [{label:'Full',count:40},{label:'Half',count:20}] },
+  { name: 'Kinetic LED', type: 'Recinece Kinetic', processor: 'Nova MCTRL 4k', proc: '14,15,16,17', tilesW: 12, tilesH: 12, dims: '', resolution: '3072Wx3072H' },
+  { name: 'Lobby', type: 'CB5', processor: 'Brompton SX40', proc: '18ABCD', tilesW: 26, tilesH: 7, dims: '51.18\' W x 27.56\' H', resolution: '2704Wx1456W' },
+  { name: 'Expert Lounge', type: 'Topaz 2.6', processor: 'Brompton S4', proc: 'LOCAL', tilesW: 8, tilesH: 1, dims: '13.12\' W x 1.64\' H', resolution: '1536W x 192H' },
+  { name: 'Partner Pavilion', type: 'Recience 1.55', processor: 'Nova MX40', proc: 'LOCAL', tilesW: 6, tilesH: 4, dims: '9.76\' W x 6.51\' H', resolution: '1920W x 1280H' },
+  { name: 'Cylinder - AI Playground', type: 'Topaz 2.6', processor: 'Brompton SX40', proc: 'LOCAL', tilesW: 12, tilesH: 5, dims: '19.69\' W x 8.2\' H', resolution: '2304W x 960H' },
+  { name: 'Knowledge Playground SL', type: 'Recience 2.06 (BlueFox)', processor: 'Nova MX40', proc: '12AB', tilesW: 9, tilesH: 7, dims: '14.65\' W x 11.39\' H', resolution: '2160W x 1680H' },
+  { name: 'Knowledge Playground SR', type: 'Recience 2.06 (BlueFox)', processor: 'Nova MX40', proc: '13CD', tilesW: 9, tilesH: 7, dims: '14.65\' W x 11.39\' H', resolution: '2160W x 1680H' },
+];
+
+const TYPE_COLORS = {
+  'Topaz 2.6': '#3B82F6',
+  'Recience 2.06': '#8B5CF6',
+  'CB5 MK2': '#F59E0B',
+  'Graphite 2mm': '#6B7280',
+  'CB5': '#10B981',
+  'Recinece Kinetic': '#EC4899',
+  'Recience 1.55': '#14B8A6',
+  'Recience 2.06 (BlueFox)': '#6366F1',
+};
+
+// On-order quantities stored per wall name
+let ledOnOrder = {};
+function loadLedOnOrder() {
+  try { ledOnOrder = JSON.parse(localStorage.getItem('sn26_led_onorder_v2') || '{}'); } catch(e) { ledOnOrder = {}; }
+}
+function saveLedOnOrder() {
+  try { localStorage.setItem('sn26_led_onorder_v2', JSON.stringify(ledOnOrder)); } catch(e) {}
+}
+loadLedOnOrder();
+
+function getTypeGroups() {
+  const groups = {};
+  LED_WALLS.forEach(w => {
+    if (!groups[w.type]) groups[w.type] = [];
+    const active = w.breakdown ? w.breakdown.reduce((s, b) => s + b.count, 0) : Math.round(w.tilesW * w.tilesH * (w.sides || 1));
+    // For breakdown walls, sum on-order from each sub-type
+    let onOrder = 0;
+    if (w.breakdown) {
+      w.breakdown.forEach(b => { onOrder += (ledOnOrder[w.name + '|' + b.label] || 0); });
+    } else {
+      onOrder = ledOnOrder[w.name] || 0;
+    }
+    const spare = onOrder - active;
+    const sparePct = active > 0 && onOrder > 0 ? Math.round((spare / active) * 100) : 0;
+    groups[w.type].push({ ...w, activeTiles: active, onOrder, spare, sparePct });
+  });
+  return groups;
+}
+
+function updateOnOrder(wallName, val) {
+  const num = parseInt(val) || 0;
+  ledOnOrder[wallName] = num;
+  saveLedOnOrder();
+  renderLedCount();
+}
+
+function renderLedCount() {
+  const groups = getTypeGroups();
+  const typeOrder = Object.keys(groups);
+
+  let totalActive = 0, totalOnOrder = 0, totalSpare = 0, totalWalls = LED_WALLS.length;
+  typeOrder.forEach(type => {
+    groups[type].forEach(w => {
+      totalActive += w.activeTiles;
+      totalOnOrder += w.onOrder;
+      totalSpare += w.spare;
+    });
+  });
+
+  const overallPct = totalActive > 0 && totalOnOrder > 0 ? Math.round((totalSpare / totalActive) * 100) : 0;
+  const pctClass = overallPct >= 15 ? 'good' : overallPct >= 5 ? 'warn' : overallPct > 0 ? 'bad' : 'none';
+
+  document.getElementById('led-summary').innerHTML = `
+    <div class="led-summary-card"><div class="big">${totalWalls}</div><div class="sub">LED Walls</div></div>
+    <div class="led-summary-card"><div class="big">${typeOrder.length}</div><div class="sub">Tile Types</div></div>
+    <div class="led-summary-card"><div class="big" style="color:#3B82F6">${totalActive}</div><div class="sub">Active Tiles</div></div>
+    <div class="led-summary-card"><div class="big" style="color:#8B5CF6">${totalOnOrder}</div><div class="sub">Tiles On Order</div></div>
+    <div class="led-summary-card"><div class="big ${totalSpare >= 0 ? 'spare-positive' : 'spare-negative'}">${totalSpare}</div><div class="sub">Total Spares</div></div>
+    <div class="led-summary-card"><div class="big"><span class="spare-pct ${pctClass}">${overallPct}%</span></div><div class="sub">Overall Spare %</div></div>
+  `;
+
+  let html = '';
+  typeOrder.forEach(type => {
+    const walls = groups[type];
+    const typeActive = walls.reduce((s, w) => s + w.activeTiles, 0);
+    const typeOnOrder = walls.reduce((s, w) => s + w.onOrder, 0);
+    const typeSpare = typeOnOrder - typeActive;
+    const typeSparePct = typeActive > 0 && typeOnOrder > 0 ? Math.round((typeSpare / typeActive) * 100) : 0;
+    const pctCls = typeSpare > 0 && typeSparePct >= 15 ? 'good' : typeSpare > 0 && typeSparePct >= 5 ? 'warn' : typeSpare > 0 ? 'bad' : 'none';
+    const color = TYPE_COLORS[type] || '#6B7280';
+
+    html += `<div class="tile-type-group">
+      <div class="tile-type-header" style="border-left: 4px solid ${color}; background: ${color}11;">
+        <h3><span class="type-color" style="background:${color}"></span>${type}</h3>
+        <div class="tile-stats">
+          <span><strong>${walls.length}</strong> wall${walls.length > 1 ? 's' : ''}</span>
+          <span style="color:#3B82F6"><strong>${typeActive}</strong> active</span>
+          <span style="color:#8B5CF6"><strong>${typeOnOrder}</strong> on order</span>
+          <span class="${typeSpare >= 0 ? 'spare-positive' : 'spare-negative'}"><strong>${typeSpare}</strong> spare</span>
+          <span class="spare-pct ${pctCls}">${typeSparePct}%</span>
+        </div>
+      </div>
+      <div class="tile-type-body">
+        <table class="led-table">
+          <thead>
+            <tr>
+              <th>Screen</th>
+              <th>Processor</th>
+              <th>Proc #</th>
+              <th class="num">Active Tiles</th>
+              <th class="num">On Order</th>
+              <th class="num">Spare</th>
+              <th class="num">Spare %</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${walls.map(w => {
+              const wPctCls = w.spare > 0 && w.sparePct >= 15 ? 'good' : w.spare > 0 && w.sparePct >= 5 ? 'warn' : w.spare > 0 ? 'bad' : 'none';
+              if (w.breakdown) {
+                // Header row for wall with breakdown
+                let rows = `<tr style="background:#FAFAFA;border-top:2px solid #E5E7EB;">
+                  <td colspan="3"><strong>${w.name}</strong></td>
+                  <td class="num"><strong>${w.activeTiles}</strong></td>
+                  <td class="num"><strong>${w.onOrder || '—'}</strong></td>
+                  <td class="num ${w.spare > 0 ? 'spare-positive' : w.spare < 0 ? 'spare-negative' : 'spare-zero'}"><strong>${w.onOrder ? w.spare : '—'}</strong></td>
+                  <td class="num">${w.onOrder ? '<span class="spare-pct ' + wPctCls + '">' + w.sparePct + '%</span>' : '—'}</td>
+                </tr>`;
+                // Sub-rows with individual on-order inputs
+                rows += w.breakdown.map(b => {
+                  const bKey = w.name + '|' + b.label;
+                  const bOnOrder = ledOnOrder[bKey] || 0;
+                  const bSpare = bOnOrder - b.count;
+                  const bPct = b.count > 0 && bOnOrder > 0 ? Math.round((bSpare / b.count) * 100) : 0;
+                  const bPctCls = bSpare > 0 && bPct >= 15 ? 'good' : bSpare > 0 && bPct >= 5 ? 'warn' : bSpare > 0 ? 'bad' : 'none';
+                  return `<tr style="background:#F9FAFB;">
+                    <td style="padding-left:28px;font-size:12px;color:#6B7280">${b.label}</td>
+                    <td colspan="2"></td>
+                    <td class="num" style="font-size:12px">${b.count}</td>
+                    <td class="num"><input class="order-input" type="number" min="0" value="${bOnOrder || ''}" placeholder="0" style="width:60px;font-size:12px" onchange="updateOnOrder('${bKey}', this.value)"></td>
+                    <td class="num ${bSpare > 0 ? 'spare-positive' : bSpare < 0 ? 'spare-negative' : 'spare-zero'}" style="font-size:12px">${bOnOrder ? bSpare : '—'}</td>
+                    <td class="num" style="font-size:12px">${bOnOrder ? '<span class="spare-pct ' + bPctCls + '">' + bPct + '%</span>' : '—'}</td>
+                  </tr>`;
+                }).join('');
+                return rows;
+              } else {
+                // Standard wall row (no breakdown)
+                return `<tr>
+                  <td><strong>${w.name}</strong></td>
+                  <td>${w.processor}</td>
+                  <td>${w.proc}</td>
+                  <td class="num"><strong>${w.activeTiles}</strong></td>
+                  <td class="num"><input class="order-input" type="number" min="0" value="${w.onOrder || ''}" placeholder="0" onchange="updateOnOrder('${w.name}', this.value)"></td>
+                  <td class="num ${w.spare > 0 ? 'spare-positive' : w.spare < 0 ? 'spare-negative' : 'spare-zero'}">${w.onOrder ? w.spare : '—'}</td>
+                  <td class="num">${w.onOrder ? '<span class="spare-pct ' + wPctCls + '">' + w.sparePct + '%</span>' : '—'}</td>
+                </tr>`;
+              }
+            }).join('')}
+            <tr class="total-row">
+              <td colspan="3" style="text-align:right"><strong>${type} Totals</strong></td>
+              <td class="num"><strong>${typeActive}</strong></td>
+              <td class="num"><strong>${typeOnOrder || '—'}</strong></td>
+              <td class="num ${typeSpare > 0 ? 'spare-positive' : typeSpare < 0 ? 'spare-negative' : 'spare-zero'}"><strong>${typeOnOrder ? typeSpare : '—'}</strong></td>
+              <td class="num">${typeOnOrder ? '<span class="spare-pct ' + pctCls + '">' + typeSparePct + '%</span>' : '—'}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('led-type-groups').innerHTML = html;
+}
+
+// ===== CUSTOM SCHEDULES =====
+const CUSTOM_CREW_INDICES = [0, 2, 27]; // Iqral, Luke Irvine, Tanner
+let customSchedules = {}; // key: "crewIdx_YYYY-MM-DD" => { start: "08:00", end: "17:00" }
+
+function customSchedKey(crewIdx, date) {
+  return crewIdx + '_' + date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+}
+function saveCustomSchedules() {
+  try { localStorage.setItem('sn26_custom_schedules', JSON.stringify(customSchedules)); } catch(e) {}
+}
+function loadCustomSchedules() {
+  try { customSchedules = JSON.parse(localStorage.getItem('sn26_custom_schedules') || '{}'); } catch(e) { customSchedules = {}; }
+}
+function updateCustomTime(crewIdx, dateStr, field, value) {
+  const key = crewIdx + '_' + dateStr;
+  if (!customSchedules[key]) customSchedules[key] = { start: '', end: '' };
+  customSchedules[key][field] = value;
+  saveCustomSchedules();
+  render();
+}
+function clearCustomDay(crewIdx, dateStr) {
+  const key = crewIdx + '_' + dateStr;
+  delete customSchedules[key];
+  saveCustomSchedules();
+  render();
+}
+loadCustomSchedules();
+
+// ===== LUNCH TIMELINE HELPERS =====
+function parseTimeAMPM(str) {
+  // Parse "6:00a", "2:00p", "12:00a", "1:00a" → minutes from midnight
+  str = str.trim().toLowerCase();
+  const m = str.match(/(\d{1,2}):(\d{2})\s*(a|p)/);
+  if (!m) return null;
+  let h = parseInt(m[1]), min = parseInt(m[2]);
+  const ampm = m[3];
+  if (ampm === 'a' && h === 12) h = 0;
+  else if (ampm === 'p' && h !== 12) h += 12;
+  return h * 60 + min;
+}
+
+function parse24h(str) {
+  // Parse "08:00", "17:00" → minutes from midnight
+  const parts = str.split(':');
+  return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+}
+
+function fmtTime12(mins) {
+  // minutes from midnight → "6:00a" / "2:00p"
+  mins = ((mins % 1440) + 1440) % 1440;
+  let h = Math.floor(mins / 60), m = mins % 60;
+  const ampm = h >= 12 ? 'p' : 'a';
+  if (h === 0) h = 12;
+  else if (h > 12) h -= 12;
+  return h + ':' + String(m).padStart(2, '0') + ampm;
+}
+
+function getShiftDurationMins(startMins, endMins) {
+  // Handle overnight shifts
+  if (endMins <= startMins) endMins += 1440;
+  return endMins - startMins;
+}
+
+function renderLunchTimelineHTML(shiftTimeStr) {
+  // Parse shift time like "6:00a – 5:00p"
+  const parts = shiftTimeStr.split(/\s*[–—-]\s*/);
+  if (parts.length < 2) return '';
+  const startMins = parseTimeAMPM(parts[0]);
+  const endMins = parseTimeAMPM(parts[1]);
+  if (startMins === null || endMins === null) return '';
+  return buildLunchTimelineFromMins(startMins, endMins);
+}
+
+function buildLunchTimelineFromMins(startMins, endMins) {
+  const duration = getShiftDurationMins(startMins, endMins);
+  if (duration < 360) return ''; // Less than 6 hours, no lunch
+  const lunchStart = startMins + 300; // 5 hours in
+  const lunchEnd = lunchStart + 60;
+  const adjEnd = endMins <= startMins ? endMins + 1440 : endMins;
+
+  const work1 = 300; // 5 hrs
+  const lunch = 60;
+  const work2 = adjEnd - lunchEnd;
+  const total = work1 + lunch + work2;
+  const w1Pct = Math.round((work1 / total) * 100);
+  const lPct = Math.max(Math.round((lunch / total) * 100), 8);
+  const w2Pct = 100 - w1Pct - lPct;
+
+  const lunchStartFmt = fmtTime12(lunchStart);
+  const lunchEndFmt = fmtTime12(lunchEnd);
+
+  return `<div class="lunch-timeline-wrap">
+    <div class="lunch-badge">🍽 Lunch: ${lunchStartFmt} – ${lunchEndFmt}</div>
+    <div class="lunch-timeline" style="margin-top:4px">
+      <div class="lunch-tl-work" style="width:${w1Pct}%">${fmtTime12(startMins)}–${lunchStartFmt}</div>
+      <div class="lunch-tl-lunch" style="width:${lPct}%">Lunch</div>
+      <div class="lunch-tl-work2" style="width:${w2Pct}%">${lunchEndFmt}–${fmtTime12(endMins)}</div>
+    </div>
+  </div>`;
+}
+
 const CREW = [
-  { name: 'Iqral La Rode', short: 'Iq', role: 'Video Lead', group: 'custom', dates: [[new Date(2026,3,17), new Date(2026,4,4)]] },
-  { name: 'David Devore', short: 'Devore', role: 'Video Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
-  { name: 'Luke Irvine', short: 'Luke I', role: 'Video Floater', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
-  { name: 'Riley Ledford', short: 'Riley', role: 'Video', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
-  { name: 'Jared McCammon', short: 'Jared', role: 'd3', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
-  { name: 'Alec Birdman', short: 'Alec', role: 'd3', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
-  { name: 'Brandon Horner', short: 'Brandon', role: 'RS4 Op', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,4)]] },
-  { name: 'Justice Simpson', short: 'Justice', role: 'Content Mgr', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,7)]] },
-  { name: 'Hugo Soto', short: 'Hugo', role: 'LED Lead', group: 'led-lead', dates: [[new Date(2026,3,20), new Date(2026,4,8)]] },
-  { name: 'Matt Covell', short: 'Matt C', role: 'LED Lead', group: 'led-lead', dates: [[new Date(2026,3,20), new Date(2026,4,8)]] },
-  { name: 'Bryant Mendez', short: 'Bryant', role: 'Video', group: 'video', dates: [[new Date(2026,3,23), new Date(2026,4,5)]], pencilled: true },
-  { name: 'Jesse Fryson', short: 'Jesse', role: 'LED Lead', group: 'led-lead', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Maxwell Bordelon', short: 'Max B', role: 'LED', group: 'led', dates: [[new Date(2026,3,20), new Date(2026,4,9)]] },
-  { name: 'Jonathan (Johnny) Jordan', short: 'Johnny', role: 'LED', group: 'led', dates: [[new Date(2026,3,20), new Date(2026,4,9)]] },
-  { name: 'Barrett Jacocks', short: 'Barrett', role: 'LED', group: 'led', dates: [[new Date(2026,3,27), new Date(2026,4,9)]] },
-  { name: 'Tavis Parker', short: 'Tavis', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
-  { name: 'Vincent Lewis', short: 'Vincent', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
-  { name: 'Eric Petty', short: 'Eric P', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,5)]] },
-  { name: 'Jeremiah Cash', short: 'Jeremiah', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
-  { name: 'John Balak', short: 'John B', role: 'LED', group: 'led', dates: [[new Date(2026,3,30), new Date(2026,4,9)]] },
-  { name: 'Wayne Sager', short: 'Wayne', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Donald Freitas', short: 'Donald', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Kaden Ryan', short: 'Kaden', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Joseph Harris', short: 'Joseph', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Ryan DeOcampo', short: 'Ryan D', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Arjay Sevilla', short: 'Arjay', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Sean McCoy', short: 'Sean', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Tanner Ouimette', short: 'Tanner', role: 'Networking', group: 'network', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
-  { name: 'Tyler Noble', short: 'Tyler N', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Francisco Garcia', short: 'Cisco', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Luke Miles', short: 'Luke M', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Jordan Noble', short: 'Jordan N', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Iqral La Rode', short: 'Iqral La Rode', role: 'Production Lead', group: 'custom', dates: [[new Date(2026,3,17), new Date(2026,4,4)]] },
+  { name: 'David Devore', short: 'David Devore', role: 'Video Lead', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
+  { name: 'Luke Irvine', short: 'Luke Irvine', role: 'Video', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,4,9)]] },
+  { name: 'Riley Ledford', short: 'Riley Ledford', role: 'Video', group: 'video', dates: [[new Date(2026,3,17), new Date(2026,3,24)], [new Date(2026,3,30), new Date(2026,4,9)]] },
+  { name: 'Jared McCammon', short: 'Jared McCammon', role: 'd3', group: 'video', dates: [[new Date(2026,3,26), new Date(2026,3,28)], [new Date(2026,3,29), new Date(2026,4,9)]] },
+  { name: 'Alec Birdman', short: 'Alec Birdman', role: 'd3', group: 'video', dates: [[new Date(2026,3,26), new Date(2026,3,28)], [new Date(2026,3,29), new Date(2026,4,9)]] },
+  { name: 'Brandon Horner', short: 'Brandon Horner', role: 'RS4 Op', group: 'video', dates: [[new Date(2026,3,30), new Date(2026,4,4)]] },
+  { name: 'Justice Simpson', short: 'Justice Simpson', role: 'Content Manager', group: 'video', dates: [[new Date(2026,3,20), new Date(2026,3,24)], [new Date(2026,3,30), new Date(2026,4,7)]] },
+  { name: 'Hugo Soto', short: 'Hugo Soto', role: 'LED Crew Lead', group: 'led-lead', dates: [[new Date(2026,3,20), new Date(2026,4,8)]] },
+  { name: 'Matt Covell', short: 'Matt Covell', role: 'LED Crew Lead', group: 'led-lead', dates: [[new Date(2026,3,25), new Date(2026,4,8)]] },
+  { name: 'Bryant Mendez', short: 'Bryant Mendez', role: 'LED Crew Lead', group: 'led-lead', dates: [[new Date(2026,3,23), new Date(2026,4,5)]] },
+  { name: 'Jesse Fryson', short: 'Jesse Fryson', role: 'LED Crew Lead', group: 'led-lead', dates: [[new Date(2026,3,21), new Date(2026,3,24)], [new Date(2026,3,25), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Maxwell Bordelon', short: 'Maxwell Bordelon', role: 'LED', group: 'led', dates: [[new Date(2026,3,20), new Date(2026,4,9)]] },
+  { name: 'Jonathan Jordan', short: 'Jonathan Jordan', role: 'LED', group: 'led', dates: [[new Date(2026,3,20), new Date(2026,4,9)]] },
+  { name: 'Barrett Jacocks', short: 'Barrett Jacocks', role: 'LED', group: 'led', dates: [[new Date(2026,3,26), new Date(2026,4,9)]] },
+  { name: 'Tavis Parker', short: 'Tavis Parker', role: 'LED', group: 'led', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
+  { name: 'Vincent Lewis', short: 'Vincent Lewis', role: 'LED', group: 'led', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
+  { name: 'Eric Petty', short: 'Eric Petty', role: 'LED', group: 'led', dates: [[new Date(2026,3,29), new Date(2026,4,5)]] },
+  { name: 'Jeremiah Cash', short: 'Jeremiah Cash', role: 'LED', group: 'led', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
+  { name: 'John Balak', short: 'John Balak', role: 'LED', group: 'led', dates: [[new Date(2026,3,29), new Date(2026,4,9)]] },
+  { name: 'Wayne Sager', short: 'Wayne Sager', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,19), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Donald Freitas', short: 'Donald Freitas', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Kaden Ryan', short: 'Kaden Ryan', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Joseph Harris', short: 'Joseph Harris', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,18), new Date(2026,3,19)], [new Date(2026,3,25), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Ryan DeOcampo', short: 'Ryan DeOcampo', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,21), new Date(2026,3,22)], [new Date(2026,3,25), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Arjay Sevilla', short: 'Arjay Sevilla', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Sean McCoy', short: 'Sean McCoy', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,20), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Tanner Ouimette', short: 'Tanner Ouimette', role: 'Networking', group: 'network', dates: [[new Date(2026,3,16), new Date(2026,4,9)]] },
+  { name: 'Tyler Noble', short: 'Tyler Noble', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,25), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Francisco Garcia', short: 'Francisco Garcia', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,20), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Luke Miles', short: 'Luke Miles', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,21), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Jordan Noble', short: 'Jordan Noble', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,20), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'JP Hartline', short: 'JP Hartline', role: 'Catwalk/d3', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,8)]] },
 ];
 
 const DAYS = [
+  { date: new Date(2026,3,23), label: 'Thu 4/23', title: 'BTC Install — Hall C', phase: 'btc',
+    shifts: [
+      { id:'0423BTC', label:'BTC Install', time:'2:00p – 6:00a', loc:'Hall C', cls:'shift-a', dept:'led', encore: {led:12, cat:4}, goals: ['BTC truck unload', 'Rigging + catwalk fiber', 'LED install overnight'] },
+    ]},
+  { date: new Date(2026,3,24), label: 'Fri 4/24', title: 'BTC Fix + LED Prep', phase: 'btc',
+    shifts: [
+      { id:'0424OVN', label:'BTC Overnight Fix', time:'8:00p – 7:00a', loc:'Hall C', cls:'shift-b', dept:'led', encore: {led:4, cat:2}, goals: ['BTC overnight fix if needed'] },
+      { id:'0424DAY', label:'LED Prep', time:'8:00a – 6:00p', loc:'Warehouse', cls:'shift-a', dept:'led', encore: {led:0, cat:0}, goals: ['LED prep continues', 'Iq leads 8 AM'] },
+    ]},
   { date: new Date(2026,3,30), label: 'Wed 4/30', title: 'Hall B Install', phase: 'install',
     shifts: [
       { id:'0430VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Hall B', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0430VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall B', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0430A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall B', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['B1: SSTotem (complete by 6a)', 'Fuse Truck Zones 1 (12a–6a) + 2 (4a–10a)', 'H: Vista 4, T4 starts 8a'] },
-      { id:'0430B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall B', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['C: SSTotem1 + Banner4 (complete by 12p)', 'D: Banner1 (complete by 8a)', 'I: T3, Banner2 (6a–8p, continues → Shift C)', 'H: Vista 4, T4 (8a–8p, continues → Shift C)'] },
-      { id:'0430C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall B', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['Finish H: Vista 4, T4 + I: T3, Banner2 by 8p', 'M1+M2: T2 + M3: T1, Vista 1 (6p–12a)'] },
+      { id:'0430A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall B', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['Truck Unload (12:01a)', 'M3: cable run w/SUT (12a)', 'C: SS Totem1 build—Flown LED (12a–12p)', 'H/M1: (2) GS Pills + Vista 2 Build (2a)', 'I: Banner 2 Build (4a)'] },
+      { id:'0430B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall B', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['C: SS Totem1 build cont\u2019d (complete by 12p)', 'H/M1: GS Pills + Vista 2 cont\u2019d', 'I: Banner 2 cont\u2019d'] },
+      { id:'0430C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall B', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['M1/2/3: AI Playground Cylinder + Entry Pills (6p)'] },
     ]},
   { date: new Date(2026,4,1), label: 'Thu 5/1', title: 'Hall C/D Install', phase: 'install',
     shifts: [
       { id:'0501VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Hall C/D', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0501VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall C/D', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['N (12a–8a/10a)', 'K (4a–10a/12p)', 'L2: Vista 3 LED (4a–8a/10a)', 'J: Convex/Concave Circle floor LED (4a–8a, before carpet)', 'Fuse Truck Zone 5 (12a–8a)'] },
-      { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['Finish N by 10a, K by 12p', 'E: Banner3, Kinetic + F: Banner5 (start 12p, continues to 10p → Shift C)'] },
-      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['Finish E: Banner3, Kinetic + F: Banner5 by 10p', 'Start B2: SSTotem area (10p overnight)'] },
+      { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['M3: AI Topaz Cylinder + Pills cont\u2019d (12a–4a)', 'J: Center Hub Truss + LED Base structure (3a–7a)', 'L: Recience walls + Vista 3 (3a–12p)', 'F: Partnership cable run w/SUT (8a)', 'D: Servicenow.org (SD Zoo) bracket drops (8a)'] },
+      { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['O: NHL Truss Build + Pipe Mount + cable run (10a–2p)', 'M3: AI monitors bracket drops (10a)', 'M3: AI monitor install (2p)'] },
+      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['B2: SS Totem (10p overnight)'] },
     ]},
   { date: new Date(2026,4,2), label: 'Fri 5/2', title: 'Foyer + Exhibit Floor', phase: 'install',
     shifts: [
       { id:'0502VA', label:'Shift A', time:'5:00a – 3:00p', loc:'Foyer + Exhibit', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0502VB', label:'Shift B', time:'6:00a – 5:00p', loc:'Foyer + Exhibit', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
       { id:'0502VC', label:'Shift C', time:'2:00p – 1:00a', loc:'Foyer + Exhibit', cls:'shift-c', dept:'video', encore: {led:0, cat:0} },
-      { id:'0502A', label:'Shift A', time:'12:00a – 11:00a', loc:'Foyer Lvl 2', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['Finish B2: SSTotem area (from overnight)', 'Area O (12a–12p, main focus)'] },
-      { id:'0502B', label:'Shift B', time:'8:00a – 7:00p', loc:'Exhibit Floor', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['Finish O by 12p'] },
+      { id:'0502A', label:'Shift A', time:'12:00a – 11:00a', loc:'Foyer Lvl 2', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['O: Large Lobby Wall + NHL/Bundesliga/AMF1 bracket drops (12a)', 'D: Servicenow.org (SD Zoo) 2×32" monitors + audio (8a)', 'F: Partner Powered/Partnership Check In/LED/Switchers (8a)', 'O: Lobby Audio Install (8a–12p)'] },
+      { id:'0502B', label:'Shift B', time:'8:00a – 7:00p', loc:'Exhibit Floor', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['O: Lobby NHL/Bundesliga/AMF1 monitor install (10a)', 'K: Destination Success outdoor monitor install (noon, TBD)'] },
     ]},
   { date: new Date(2026,4,3), label: 'Sat 5/3', title: 'Expo Hall Install', phase: 'install',
     shifts: [
       { id:'0503VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0503VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Expo Hall', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0503A', label:'Shift A', time:'8:00a – 7:00p', loc:'Expo Hall', cls:'shift-a', dept:'led', encore: {led:4, cat:0} },
-      { id:'0503B', label:'Shift B', time:'3:00p – 2:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:4, cat:0} },
+      { id:'0503A', label:'Shift A', time:'8:00a – 7:00p', loc:'Expo Hall', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['N: Customer Showcase FedEx OLED install (8a, TBD)', 'J: Expert Lounge Bench build out (8a, TBD)', 'J: Monitor Install + Sparkle Room (12p, TBD)'] },
+      { id:'0503B', label:'Shift B', time:'3:00p – 2:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['J: Monitor Install + Sparkle Room cont\u2019d (TBD)'] },
     ]},
   { date: new Date(2026,4,4), label: 'Sun 5/4', title: 'Foyer + Expo Finish', phase: 'install',
     shifts: [
@@ -515,20 +907,27 @@ function showToast(msg) {
 }
 
 // --- localStorage persistence ---
+// Crew index reference: 0=Iqral, 1=Devore, 2=Luke I, 3=Riley, 4=Jared, 5=Alec, 6=Brandon, 7=Justice, 8=Hugo, 9=Matt C, 10=Bryant, 11=Jesse, 12=Maxwell, 13=Jonathan, 14=Barrett, 15=Tavis, 16=Vincent, 17=Eric, 18=Jeremiah, 19=John B, 20=Wayne, 21=Donald, 22=Kaden, 23=Joseph, 24=Ryan D, 25=Arjay, 26=Sean, 27=Tanner, 28=Tyler, 29=Francisco, 30=Luke M, 31=Jordan, 32=JP
+const SEED_ASSIGNMENTS = {"0423BTC":[0,1,2,3,7,8,11,12,13,20,27,28,29,30,31],"0424OVN":[],"0424DAY":[0,1,2,7,8,11,20,27,28,29,30,31],"0430VA":[1,2,6,7,4],"0430VB":[3,10,5],"0430A":[11,17,19,28,23,25],"0430B":[8,12,13,16,21,22,27,29,26],"0430C":[9,14,18,15,20,24,30,31],"0501VA":[1,6,7,4],"0501VB":[3,10,5,2],"0501A":[11,19,17,28,23,25],"0501B":[8,12,13,16,21,22,26,27,29],"0501C":[9,14,15,18,20,24,30,31],"0502VA":[1,4,7],"0502VB":[3,5,6],"0502VC":[10],"0502A":[9,11,15,16,17,18,20,23,25,28,30],"0502B":[8,12,13,14,19,21,22,24,26,27,29,31],"0503VA":[1,4,6,7],"0503VB":[3,5,10],"0503A":[8,12,13,14,19,21,22,24,26,27,29,31],"0503B":[9,11,15,16,17,18,20,23,25,28,30],"0504VA":[1,6,4,7],"0504VB":[3,10,5],"0504A":[8,12,13,14,19,21,22,24,26,27,29,31],"0504B":[9,11,15,16,17,18,20,23,25,28,30],"0505":[],"0506":[27],"0507S":[],"0507X":[],"0508A":[],"0508B":[],"0509":[]};
+
 function saveAssignments() {
   try { localStorage.setItem('sn26_assignments', JSON.stringify(assignments)); } catch(e) {}
 }
 function loadAssignments() {
   try {
+    // One-time seed restore (v2 = full-name update Apr 15 2026)
+    if (!localStorage.getItem('sn26_seed_v4')) {
+      localStorage.removeItem('sn26_assignments');
+      localStorage.setItem('sn26_seed_v4', '1');
+    }
     const saved = localStorage.getItem('sn26_assignments');
-    if (!saved) return;
-    const data = JSON.parse(saved);
-    // Validate and restore — only keep valid shift IDs and crew indices
+    const data = saved ? JSON.parse(saved) : SEED_ASSIGNMENTS;
     for (const shiftId of Object.keys(assignments)) {
       if (Array.isArray(data[shiftId])) {
         assignments[shiftId] = data[shiftId].filter(i => Number.isInteger(i) && i >= 0 && i < CREW.length);
       }
     }
+    saveAssignments();
   } catch(e) {}
 }
 
@@ -659,12 +1058,14 @@ function render() {
               ).join('')}</div>`
             : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
 
+          const lunchHtml = renderLunchTimelineHTML(shift.time);
           return `<div class="shift-block ${shift.cls}">
             <div class="shift-label">${shift.label} <span class="time">${shift.time}</span> <span style="margin-left:auto;display:flex;gap:3px"><span class="cp-btn copy" onclick="event.stopPropagation();copyShift('${shift.id}')" title="Copy crew from this shift">Copy</span>${clipboard ? '<span class=\"cp-btn paste\" onclick=\"event.stopPropagation();pasteShift(\'' + shift.id + '\',' + dayIdx + ')\" title=\"Paste crew from ' + clipboard.label + '\">Paste</span>' : ''}</span></div>
             <div class="shift-details">
               <span class="loc">${shift.loc}</span>
               ${encoreHtml}
               ${shift.goals && shift.goals.length > 0 ? '<div class="shift-goals">' + shift.goals.map(g => '<span class="goal-tag">' + g + '</span>').join('') + '</div>' : ''}
+              ${lunchHtml}
             </div>
             <div class="crew-slots">
               <h4>Available Crew (${videoCrewOnly.length})</h4>
@@ -728,12 +1129,14 @@ function render() {
               ).join('')}</div>`
             : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
 
+          const lunchHtml2 = renderLunchTimelineHTML(shift.time);
           return `<div class="shift-block ${shift.cls}">
             <div class="shift-label">${shift.label} <span class="time">${shift.time}</span> <span style="margin-left:auto;display:flex;gap:3px"><span class="cp-btn copy" onclick="event.stopPropagation();copyShift('${shift.id}')" title="Copy crew from this shift">Copy</span>${clipboard ? '<span class=\"cp-btn paste\" onclick=\"event.stopPropagation();pasteShift(\'' + shift.id + '\',' + dayIdx + ')\" title=\"Paste crew from ' + clipboard.label + '\">Paste</span>' : ''}</span></div>
             <div class="shift-details">
               <span class="loc">${shift.loc}</span>
               ${encoreHtml}
               ${shift.goals && shift.goals.length > 0 ? '<div class="shift-goals">' + shift.goals.map(g => '<span class="goal-tag">' + g + '</span>').join('') + '</div>' : ''}
+              ${lunchHtml2}
             </div>
             <div class="crew-slots">
               <h4>Available Crew (${ledCrewOnly.length})</h4>
@@ -792,12 +1195,14 @@ function render() {
             ).join('')}</div>`
           : `<div class="assignment-area"><span class="placeholder">Click crew names above to assign</span></div>`;
 
+        const lunchHtml3 = renderLunchTimelineHTML(shift.time);
         return `<div class="shift-block ${shift.cls}">
           <div class="shift-label">${shift.label} <span class="time">${shift.time}</span> <span style="margin-left:auto;display:flex;gap:3px"><span class="cp-btn copy" onclick="event.stopPropagation();copyShift('${shift.id}')" title="Copy crew from this shift">Copy</span>${clipboard ? '<span class=\"cp-btn paste\" onclick=\"event.stopPropagation();pasteShift(\'' + shift.id + '\',' + dayIdx + ')\" title=\"Paste crew from ' + clipboard.label + '\">Paste</span>' : ''}</span></div>
           <div class="shift-details">
             <span class="loc">${shift.loc}</span>
             ${encoreHtml}
             ${shift.goals && shift.goals.length > 0 ? '<div class="shift-goals">' + shift.goals.map(g => '<span class="goal-tag">' + g + '</span>').join('') + '</div>' : ''}
+            ${lunchHtml3}
           </div>
           <div class="crew-slots">
             <h4>Available Crew (${availCrew.length})</h4>
@@ -813,6 +1218,44 @@ function render() {
 
     const assignedOnDay = day.shifts.reduce((sum, s) => sum + assignments[s.id].length, 0);
 
+    // Custom schedules section for Iqral, Luke Irvine, Tanner
+    const dateStr = day.date.getFullYear() + '-' + String(day.date.getMonth()+1).padStart(2,'0') + '-' + String(day.date.getDate()).padStart(2,'0');
+    let customSchedHtml = '';
+    const customAvail = CUSTOM_CREW_INDICES.filter(ci => isAvailable(CREW[ci], day.date));
+    if (customAvail.length > 0) {
+      const rows = customAvail.map(ci => {
+        const c = CREW[ci];
+        const key = ci + '_' + dateStr;
+        const sched = customSchedules[key] || { start: '', end: '' };
+        const hasSchedule = sched.start && sched.end;
+        let lunchInfo = '';
+        if (hasSchedule) {
+          const sMins = parse24h(sched.start);
+          const eMins = parse24h(sched.end);
+          const dur = getShiftDurationMins(sMins, eMins);
+          if (dur >= 360) {
+            const lunchStartMins = sMins + 300;
+            lunchInfo = `<span class="custom-sched-lunch">🍽 Lunch: ${fmtTime12(lunchStartMins)} – ${fmtTime12(lunchStartMins + 60)}</span>`;
+          }
+        }
+        const groupColors = { 'custom': '#9333EA', 'video': '#3B82F6', 'network': '#10B981' };
+        const dotColor = groupColors[c.group] || '#6B7280';
+        return `<div class="custom-sched-row">
+          <span class="custom-sched-name"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${dotColor};margin-right:6px;vertical-align:middle"></span>${c.short} <span class="role-label">${c.role}</span></span>
+          <input type="time" class="custom-time-input" value="${sched.start}" onchange="updateCustomTime(${ci}, '${dateStr}', 'start', this.value)" title="Start time">
+          <span class="custom-sched-arrow">→</span>
+          <input type="time" class="custom-time-input" value="${sched.end}" onchange="updateCustomTime(${ci}, '${dateStr}', 'end', this.value)" title="End time">
+          ${lunchInfo}
+          ${hasSchedule ? `<span style="cursor:pointer;font-size:14px;color:#EF4444;margin-left:4px" onclick="clearCustomDay(${ci},'${dateStr}')" title="Clear schedule">✕</span>` : '<span class="custom-sched-off">No schedule set</span>'}
+        </div>`;
+      }).join('');
+
+      customSchedHtml = `<div class="custom-sched-section">
+        <h4><span style="font-size:14px">📋</span> Custom Schedules</h4>
+        ${rows}
+      </div>`;
+    }
+
     daysHtml += `<div class="day-card phase-${day.phase} ${show ? '' : 'hidden'}">
       <div class="day-header" onclick="this.parentElement.querySelector('.day-body').style.display = this.parentElement.querySelector('.day-body').style.display === 'none' ? 'block' : 'none'">
         <div>
@@ -824,6 +1267,7 @@ function render() {
         </div>
       </div>
       <div class="day-body">
+        ${customSchedHtml}
         ${shiftsHtml}
       </div>
     </div>`;
