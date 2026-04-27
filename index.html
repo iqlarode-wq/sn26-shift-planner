@@ -39,6 +39,10 @@
   .phase-install .day-header { background: linear-gradient(135deg, #EDE9FE, #DBEAFE); }
   .phase-show .day-header { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
   .phase-strike .day-header { background: linear-gradient(135deg, #FEE2E2, #FECACA); }
+  .day-card.archived { opacity: 0.78; }
+  .day-card.archived .day-header { background: linear-gradient(135deg, #E5E7EB, #D1D5DB) !important; }
+  .day-card.archived::before { content: 'ARCHIVED'; display: inline-block; background: #6B7280; color: white; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 0 0 8px 0; position: absolute; top: 0; left: 0; z-index: 2; }
+  .day-card.archived { position: relative; }
 
   /* Shift blocks */
   .shifts-grid { display: grid; gap: 12px; margin-top: 12px; }
@@ -224,6 +228,7 @@
   <button data-filter="install">Install (4/30–5/4)</button>
   <button data-filter="show">Show (5/5–5/7)</button>
   <button data-filter="strike">Strike (5/8–5/9)</button>
+  <button data-filter="archive" style="background:#F3F4F6;color:#6B7280;border-color:#D1D5DB" title="Past shows kept for reference">📁 Archive</button>
   <span style="flex:1"></span>
   <button style="background:#3B82F6;color:white;border-color:#3B82F6;font-weight:600" onclick="saveSnapshot()">Save</button>
   <button style="background:#1D4ED8;color:white;border-color:#1D4ED8;font-weight:600" onclick="downloadSnapshot()">Download</button>
@@ -594,70 +599,64 @@ const CREW = [
 ];
 
 const DAYS = [
-  { date: new Date(2026,3,23), label: 'Thu 4/23', title: 'BTC Install — Hall C', phase: 'btc',
+  { date: new Date(2026,3,23), label: 'Thu 4/23', title: 'BTC Install — Hall C', phase: 'btc', archived: true,
     shifts: [
       { id:'0423BTC', label:'BTC Install', time:'2:00p – 6:00a', loc:'Hall C', cls:'shift-a', dept:'led', encore: {led:12, cat:4}, goals: ['BTC truck unload', 'Rigging + catwalk fiber', 'LED install overnight'] },
     ]},
-  { date: new Date(2026,3,24), label: 'Fri 4/24', title: 'BTC Fix + LED Prep', phase: 'btc',
-    shifts: [
-      { id:'0424OVN', label:'BTC Overnight Fix', time:'8:00p – 7:00a', loc:'Hall C', cls:'shift-b', dept:'led', encore: {led:4, cat:2}, goals: ['BTC overnight fix if needed'] },
-      { id:'0424DAY', label:'LED Prep', time:'8:00a – 6:00p', loc:'Warehouse', cls:'shift-a', dept:'led', encore: {led:0, cat:0}, goals: ['LED prep continues', 'Iq leads 8 AM'] },
-    ]},
   { date: new Date(2026,3,30), label: 'Wed 4/30', title: 'Hall B Install', phase: 'install',
     shifts: [
-      { id:'0430VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Hall B', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
-      { id:'0430VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall B', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0430A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall B', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['Truck Unload (12:01a)', 'M3: cable run w/SUT (12a)', 'C: SS Totem1 build—Flown LED (12a–12p)', 'H/M1: (2) GS Pills + Vista 2 Build (2a)', 'I: Banner 2 Build (4a)'] },
-      { id:'0430B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall B', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['C: SS Totem1 build cont\u2019d (complete by 12p)', 'H/M1: GS Pills + Vista 2 cont\u2019d', 'I: Banner 2 cont\u2019d'] },
-      { id:'0430C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall B', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['M1/2/3: AI Playground Cylinder + Entry Pills (6p)'] },
+      { id:'0430VA', label:'ENG A', time:'8:00a – 6:00p', loc:'Hall B', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0430VB', label:'ENG B', time:'3:00p – 1:00a', loc:'Hall B', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0430A', label:'Shift A', time:'12:00a – 10:00a', loc:'Hall B', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['Truck Unload (12:01a)', 'M3: cable run w/SUT (12a)', 'C: SS Totem1 build—Flown LED (12a–12p)', 'H/M1: (2) GS Pills + Vista 2 Build (2a)', 'I: Banner 2 Build (4a)'] },
+      { id:'0430B', label:'Shift B', time:'8:00a – 6:00p', loc:'Hall B', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['C: SS Totem1 build cont\u2019d (complete by 12p)', 'H/M1: GS Pills + Vista 2 cont\u2019d', 'I: Banner 2 cont\u2019d'] },
+      { id:'0430C', label:'Shift C', time:'4:00p – 2:00a', loc:'Hall B', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['M1/2/3: AI Playground Cylinder + Entry Pills (6p)'] },
     ]},
   { date: new Date(2026,4,1), label: 'Thu 5/1', title: 'Hall C/D Install', phase: 'install',
     shifts: [
-      { id:'0501VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Hall C/D', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
-      { id:'0501VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Hall C/D', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0501A', label:'Shift A', time:'12:00a – 11:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['M3: AI Topaz Cylinder + Pills cont\u2019d (12a–4a)', 'J: Center Hub Truss + LED Base structure (3a–7a)', 'L: Recience walls + Vista 3 (3a–12p)', 'F: Partnership cable run w/SUT (8a)', 'D: Servicenow.org (SD Zoo) bracket drops (8a)'] },
-      { id:'0501B', label:'Shift B', time:'8:00a – 7:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['O: NHL Truss Build + Pipe Mount + cable run (10a–2p)', 'M3: AI monitors bracket drops (10a)', 'M3: AI monitor install (2p)'] },
-      { id:'0501C', label:'Shift C', time:'4:00p – 3:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['B2: SS Totem (10p overnight)'] },
+      { id:'0501VA', label:'ENG A', time:'7:00a – 5:00p', loc:'Hall C/D', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0501VB', label:'ENG B', time:'3:00p – 1:00a', loc:'Hall C/D', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0501A', label:'Shift A', time:'12:00a – 10:00a', loc:'Hall C/D', cls:'shift-a', dept:'led', encore: {led:8, cat:8}, goals: ['M3: AI Topaz Cylinder + Pills cont\u2019d (12a–4a)', 'J: Center Hub Truss + LED Base structure (3a–7a)', 'L: Recience walls + Vista 3 (3a–12p)', 'F: Partnership cable run w/SUT (8a)', 'D: Servicenow.org (SD Zoo) bracket drops (8a)'] },
+      { id:'0501B', label:'Shift B', time:'8:00a – 6:00p', loc:'Hall C/D', cls:'shift-b', dept:'led', encore: {led:8, cat:8}, goals: ['O: NHL Truss Build + Pipe Mount + cable run (10a–2p)', 'M3: AI monitors bracket drops (10a)', 'M3: AI monitor install (2p)'] },
+      { id:'0501C', label:'Shift C', time:'4:00p – 2:00a', loc:'Hall C/D', cls:'shift-c', dept:'led', encore: {led:8, cat:8}, goals: ['B2: SS Totem (10p overnight)'] },
     ]},
   { date: new Date(2026,4,2), label: 'Fri 5/2', title: 'Foyer + Exhibit Floor', phase: 'install',
     shifts: [
-      { id:'0502VA', label:'Shift A', time:'5:00a – 3:00p', loc:'Foyer + Exhibit', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
-      { id:'0502VB', label:'Shift B', time:'6:00a – 5:00p', loc:'Foyer + Exhibit', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0502VC', label:'Shift C', time:'2:00p – 1:00a', loc:'Foyer + Exhibit', cls:'shift-c', dept:'video', encore: {led:0, cat:0} },
-      { id:'0502A', label:'Shift A', time:'12:00a – 11:00a', loc:'Foyer Lvl 2', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['O: Large Lobby Wall + NHL/Bundesliga/AMF1 bracket drops (12a)', 'D: Servicenow.org (SD Zoo) 2×32" monitors + audio (8a)', 'F: Partner Powered/Partnership Check In/LED/Switchers (8a)', 'O: Lobby Audio Install (8a–12p)'] },
-      { id:'0502B', label:'Shift B', time:'8:00a – 7:00p', loc:'Exhibit Floor', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['O: Lobby NHL/Bundesliga/AMF1 monitor install (10a)', 'K: Destination Success outdoor monitor install (noon, TBD)'] },
+      { id:'0502VA', label:'ENG A', time:'8:00a – 6:00p', loc:'Foyer + Exhibit', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0502VB', label:'ENG B', time:'3:00p – 1:00a', loc:'Foyer + Exhibit', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0502A', label:'Shift A', time:'12:00a – 10:00a', loc:'Foyer Lvl 2', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['O: Large Lobby Wall + NHL/Bundesliga/AMF1 bracket drops (12a)', 'D: Servicenow.org (SD Zoo) 2×32" monitors + audio (8a)', 'F: Partner Powered/Partnership Check In/LED/Switchers (8a)', 'O: Lobby Audio Install (8a–12p)'] },
+      { id:'0502B', label:'Shift B', time:'8:00a – 6:00p', loc:'Exhibit Floor', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['O: Lobby NHL/Bundesliga/AMF1 monitor install (10a)', 'K: Destination Success outdoor monitor install (noon, TBD)'] },
     ]},
   { date: new Date(2026,4,3), label: 'Sat 5/3', title: 'Expo Hall Install', phase: 'install',
     shifts: [
-      { id:'0503VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
-      { id:'0503VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Expo Hall', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0503A', label:'Shift A', time:'8:00a – 7:00p', loc:'Expo Hall', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['N: Customer Showcase FedEx OLED install (8a, TBD)', 'J: Expert Lounge Bench build out (8a, TBD)', 'J: Monitor Install + Sparkle Room (12p, TBD)'] },
-      { id:'0503B', label:'Shift B', time:'3:00p – 2:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['J: Monitor Install + Sparkle Room cont\u2019d (TBD)'] },
+      { id:'0503VA', label:'ENG A', time:'8:00a – 6:00p', loc:'Expo Hall', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0503VB', label:'ENG B', time:'3:00p – 1:00a', loc:'Expo Hall', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0503A', label:'Shift A', time:'8:00a – 6:00p', loc:'Expo Hall', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['N: Customer Showcase FedEx OLED install (8a, TBD)', 'J: Expert Lounge Bench build out (8a, TBD)', 'J: Monitor Install + Sparkle Room (12p, TBD)'] },
+      { id:'0503B', label:'Shift B', time:'3:00p – 1:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['J: Monitor Install + Sparkle Room cont\u2019d (TBD)'] },
     ]},
   { date: new Date(2026,4,4), label: 'Sun 5/4', title: 'Foyer + Expo Finish', phase: 'install',
     shifts: [
-      { id:'0504VA', label:'ENG A', time:'6:00a – 5:00p', loc:'Foyer + Expo', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
-      { id:'0504VB', label:'ENG B', time:'2:00p – 1:00a', loc:'Foyer + Expo', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
-      { id:'0504A', label:'Shift A', time:'8:00a – 7:00p', loc:'Foyer', cls:'shift-a', dept:'led', encore: {led:4, cat:0} },
-      { id:'0504B', label:'Shift B', time:'5:00p – 4:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:2, cat:0} },
+      { id:'0504VA', label:'ENG A', time:'8:00a – 6:00p', loc:'Foyer + Expo', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
+      { id:'0504VB', label:'ENG B', time:'3:00p – 1:00a', loc:'Foyer + Expo', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
+      { id:'0504A', label:'Shift A', time:'8:00a – 6:00p', loc:'Foyer', cls:'shift-a', dept:'led', encore: {led:4, cat:0} },
+      { id:'0504B', label:'Shift B', time:'5:00p – 3:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:2, cat:0} },
     ]},
   { date: new Date(2026,4,5), label: 'Mon 5/5', title: 'Show Day 1', phase: 'show',
     shifts: [
-      { id:'0505', label:'SHOW', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
+      { id:'0505', label:'SHOW', time:'6:00a – 4:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
     ]},
   { date: new Date(2026,4,6), label: 'Tue 5/6', title: 'Show Day 2', phase: 'show',
     shifts: [
-      { id:'0506', label:'SHOW', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
+      { id:'0506', label:'SHOW', time:'6:00a – 4:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
     ]},
   { date: new Date(2026,4,7), label: 'Wed 5/7', title: 'Show Day 3 + Strike', phase: 'show',
     shifts: [
-      { id:'0507S', label:'SHOW', time:'6:00a – 5:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
-      { id:'0507X', label:'STRIKE', time:'3:00p – 12:00a', loc:'Expo Hall', cls:'shift-strike', encore: {led:4, cat:12} },
+      { id:'0507S', label:'SHOW', time:'6:00a – 4:00p', loc:'Expo Hall', cls:'shift-show', encore: {led:0, cat:0} },
+      { id:'0507X', label:'STRIKE', time:'3:00p – 1:00a', loc:'Expo Hall', cls:'shift-strike', encore: {led:4, cat:12} },
     ]},
   { date: new Date(2026,4,8), label: 'Thu 5/8', title: 'Strike Day 2', phase: 'strike',
     shifts: [
-      { id:'0508A', label:'Shift A', time:'8:00a – 7:00p', loc:'Expo Hall', cls:'shift-a', encore: {led:4, cat:12} },
-      { id:'0508B', label:'Shift B', time:'3:00p – 12:00a', loc:'Expo Hall', cls:'shift-b', encore: {led:4, cat:4} },
+      { id:'0508A', label:'Shift A', time:'8:00a – 6:00p', loc:'Expo Hall', cls:'shift-a', encore: {led:4, cat:12} },
+      { id:'0508B', label:'Shift B', time:'3:00p – 1:00a', loc:'Expo Hall', cls:'shift-b', encore: {led:4, cat:4} },
     ]},
   { date: new Date(2026,4,9), label: 'Fri 5/9', title: 'Load-Out', phase: 'strike',
     shifts: [
@@ -690,6 +689,8 @@ function getAssignedShiftOnDay(crewIdx, dayDate) {
 }
 
 function toggleAssignment(shiftId, crewIdx) {
+  // Save undo point so the global Undo button reverts the most recent click
+  lastUndo = JSON.parse(JSON.stringify(assignments));
   const arr = assignments[shiftId];
   const idx = arr.indexOf(crewIdx);
   if (idx >= 0) {
@@ -908,7 +909,7 @@ function showToast(msg) {
 
 // --- localStorage persistence ---
 // Crew index reference: 0=Iqral, 1=Devore, 2=Luke I, 3=Riley, 4=Jared, 5=Alec, 6=Brandon, 7=Justice, 8=Hugo, 9=Matt C, 10=Bryant, 11=Jesse, 12=Maxwell, 13=Jonathan, 14=Barrett, 15=Tavis, 16=Vincent, 17=Eric, 18=Jeremiah, 19=John B, 20=Wayne, 21=Donald, 22=Kaden, 23=Joseph, 24=Ryan D, 25=Arjay, 26=Sean, 27=Tanner, 28=Tyler, 29=Francisco, 30=Luke M, 31=Jordan, 32=JP
-const SEED_ASSIGNMENTS = {"0423BTC":[0,1,2,3,7,8,11,12,13,20,27,28,29,30,31],"0424OVN":[],"0424DAY":[0,1,2,7,8,11,20,27,28,29,30,31],"0430VA":[1,2,6,7,4],"0430VB":[3,10,5],"0430A":[11,17,19,28,23,25],"0430B":[8,12,13,16,21,22,27,29,26],"0430C":[9,14,18,15,20,24,30,31],"0501VA":[1,6,7,4],"0501VB":[3,10,5,2],"0501A":[11,19,17,28,23,25],"0501B":[8,12,13,16,21,22,26,27,29],"0501C":[9,14,15,18,20,24,30,31],"0502VA":[1,4,7],"0502VB":[3,5,6],"0502VC":[10],"0502A":[9,11,15,16,17,18,20,23,25,28,30],"0502B":[8,12,13,14,19,21,22,24,26,27,29,31],"0503VA":[1,4,6,7],"0503VB":[3,5,10],"0503A":[8,12,13,14,19,21,22,24,26,27,29,31],"0503B":[9,11,15,16,17,18,20,23,25,28,30],"0504VA":[1,6,4,7],"0504VB":[3,10,5],"0504A":[8,12,13,14,19,21,22,24,26,27,29,31],"0504B":[9,11,15,16,17,18,20,23,25,28,30],"0505":[],"0506":[27],"0507S":[],"0507X":[],"0508A":[],"0508B":[],"0509":[]};
+const SEED_ASSIGNMENTS = {"0423BTC":[0,1,2,3,7,8,11,12,13,20,27,28,29,30,31],"0430VA":[1,2,6,7,4],"0430VB":[3,10,5],"0430A":[11,17,19,28,23,25],"0430B":[8,12,13,16,21,22,27,29,26],"0430C":[9,14,18,15,20,24,30,31],"0501VA":[1,6,7,4],"0501VB":[3,10,5,2],"0501A":[11,19,17,28,23,25],"0501B":[8,12,13,16,21,22,26,27,29],"0501C":[9,14,15,18,20,24,30,31],"0502VA":[1,4,7],"0502VB":[3,5,6,10],"0502A":[9,11,15,16,17,18,20,23,25,28,30],"0502B":[8,12,13,14,19,21,22,24,26,27,29,31],"0503VA":[1,4,6,7],"0503VB":[3,5,10],"0503A":[8,12,13,14,19,21,22,24,26,27,29,31],"0503B":[9,11,15,16,17,18,20,23,25,28,30],"0504VA":[1,6,4,7],"0504VB":[3,10,5],"0504A":[8,12,13,14,19,21,22,24,26,27,29,31],"0504B":[9,11,15,16,17,18,20,23,25,28,30],"0505":[],"0506":[27],"0507S":[],"0507X":[],"0508A":[],"0508B":[],"0509":[]};
 
 function saveAssignments() {
   try { localStorage.setItem('sn26_assignments', JSON.stringify(assignments)); } catch(e) {}
@@ -919,6 +920,22 @@ function loadAssignments() {
     if (!localStorage.getItem('sn26_seed_v4')) {
       localStorage.removeItem('sn26_assignments');
       localStorage.setItem('sn26_seed_v4', '1');
+    }
+    // v5 migration: 4/24 dropped (dark day), 4/23 archived, 5/2 shift C dropped — move 0502VC crew to 0502VB
+    if (!localStorage.getItem('sn26_seed_v5')) {
+      try {
+        const raw = localStorage.getItem('sn26_assignments');
+        if (raw) {
+          const d = JSON.parse(raw);
+          if (Array.isArray(d['0502VC']) && d['0502VC'].length) {
+            d['0502VB'] = d['0502VB'] || [];
+            d['0502VC'].forEach(i => { if (!d['0502VB'].includes(i)) d['0502VB'].push(i); });
+          }
+          delete d['0424OVN']; delete d['0424DAY']; delete d['0502VC'];
+          localStorage.setItem('sn26_assignments', JSON.stringify(d));
+        }
+      } catch(e) {}
+      localStorage.setItem('sn26_seed_v5', '1');
     }
     const saved = localStorage.getItem('sn26_assignments');
     const data = saved ? JSON.parse(saved) : SEED_ASSIGNMENTS;
@@ -993,7 +1010,10 @@ function render() {
   // Days
   let daysHtml = '';
   DAYS.forEach((day, dayIdx) => {
-    const show = filter === 'all' || filter === day.phase;
+    // Archive filter: only show archived days. Other filters: hide archived from view.
+    const show = filter === 'archive'
+      ? !!day.archived
+      : (!day.archived && (filter === 'all' || filter === day.phase));
     const availCrew = CREW.map((c, i) => ({ ...c, idx: i })).filter(c => isAvailable(c, day.date));
     const availByGroup = {};
     availCrew.forEach(c => {
@@ -1256,7 +1276,7 @@ function render() {
       </div>`;
     }
 
-    daysHtml += `<div class="day-card phase-${day.phase} ${show ? '' : 'hidden'}">
+    daysHtml += `<div class="day-card phase-${day.phase} ${day.archived ? 'archived' : ''} ${show ? '' : 'hidden'}">
       <div class="day-header" onclick="this.parentElement.querySelector('.day-body').style.display = this.parentElement.querySelector('.day-body').style.display === 'none' ? 'block' : 'none'">
         <div>
           <h2>${day.label} — ${day.title}</h2>
