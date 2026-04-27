@@ -625,20 +625,21 @@ const DAYS = [
       { id:'0502VB', label:'ENG B', time:'3:00p – 1:00a', loc:'Foyer + Exhibit', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
       { id:'0502A', label:'Shift A', time:'12:00a – 10:00a', loc:'Foyer Lvl 2', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['O: Large Lobby Wall + NHL/Bundesliga/AMF1 bracket drops (12a)', 'D: Servicenow.org (SD Zoo) 2×32" monitors + audio (8a)', 'F: Partner Powered/Partnership Check In/LED/Switchers (8a)', 'O: Lobby Audio Install (8a–12p)'] },
       { id:'0502B', label:'Shift B', time:'8:00a – 6:00p', loc:'Exhibit Floor', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['O: Lobby NHL/Bundesliga/AMF1 monitor install (10a)', 'K: Destination Success outdoor monitor install (noon, TBD)'] },
+      { id:'0502C', label:'Shift C', time:'4:00p – 2:00a', loc:'Exhibit Floor', cls:'shift-c', dept:'led', encore: {led:4, cat:0} },
     ]},
   { date: new Date(2026,4,3), label: 'Sat 5/3', title: 'Expo Hall Install', phase: 'install',
     shifts: [
       { id:'0503VA', label:'ENG A', time:'8:00a – 6:00p', loc:'Expo Hall', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0503VB', label:'ENG B', time:'3:00p – 1:00a', loc:'Expo Hall', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
       { id:'0503A', label:'Shift A', time:'8:00a – 6:00p', loc:'Expo Hall', cls:'shift-a', dept:'led', encore: {led:4, cat:0}, goals: ['N: Customer Showcase FedEx OLED install (8a, TBD)', 'J: Expert Lounge Bench build out (8a, TBD)', 'J: Monitor Install + Sparkle Room (12p, TBD)'] },
-      { id:'0503B', label:'Shift B', time:'3:00p – 1:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['J: Monitor Install + Sparkle Room cont\u2019d (TBD)'] },
+      { id:'0503B', label:'Shift B', time:'4:00p – 2:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:4, cat:0}, goals: ['J: Monitor Install + Sparkle Room cont\u2019d (TBD)'] },
     ]},
   { date: new Date(2026,4,4), label: 'Sun 5/4', title: 'Foyer + Expo Finish', phase: 'install',
     shifts: [
       { id:'0504VA', label:'ENG A', time:'8:00a – 6:00p', loc:'Foyer + Expo', cls:'shift-a', dept:'video', encore: {led:0, cat:0} },
       { id:'0504VB', label:'ENG B', time:'3:00p – 1:00a', loc:'Foyer + Expo', cls:'shift-b', dept:'video', encore: {led:0, cat:0} },
       { id:'0504A', label:'Shift A', time:'8:00a – 6:00p', loc:'Foyer', cls:'shift-a', dept:'led', encore: {led:4, cat:0} },
-      { id:'0504B', label:'Shift B', time:'5:00p – 3:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:2, cat:0} },
+      { id:'0504B', label:'Shift B', time:'4:00p – 2:00a', loc:'Expo Hall', cls:'shift-b', dept:'led', encore: {led:2, cat:0} },
     ]},
   { date: new Date(2026,4,5), label: 'Mon 5/5', title: 'Show Day 1', phase: 'show',
     shifts: [
@@ -909,7 +910,7 @@ function showToast(msg) {
 
 // --- localStorage persistence ---
 // Crew index reference: 0=Iqral, 1=Devore, 2=Luke I, 3=Riley, 4=Jared, 5=Alec, 6=Brandon, 7=Justice, 8=Hugo, 9=Matt C, 10=Bryant, 11=Jesse, 12=Maxwell, 13=Jonathan, 14=Barrett, 15=Tavis, 16=Vincent, 17=Eric, 18=Jeremiah, 19=John B, 20=Wayne, 21=Donald, 22=Kaden, 23=Joseph, 24=Ryan D, 25=Arjay, 26=Sean, 27=Tanner, 28=Tyler, 29=Francisco, 30=Luke M, 31=Jordan, 32=JP
-const SEED_ASSIGNMENTS = {"0423BTC":[0,1,2,3,7,8,11,12,13,20,27,28,29,30,31],"0430VA":[1,2,6,7,4],"0430VB":[3,5],"0430A":[11,17,19,28,23,25],"0430B":[8,12,13,16,21,22,27,29,26],"0430C":[9,14,18,15,20,24,30,31],"0501VA":[1,6,7,4],"0501VB":[3,5,2],"0501A":[11,19,17,28,23,25],"0501B":[8,12,13,16,21,22,26,27,29],"0501C":[9,14,15,18,20,24,30,31],"0502VA":[1,4,7],"0502VB":[3,5,6],"0502A":[9,11,15,16,17,18,20,23,25,28,30],"0502B":[8,12,13,14,19,21,22,24,26,27,29,31],"0503VA":[1,4,6,7],"0503VB":[3,5],"0503A":[8,12,13,14,19,21,22,24,26,27,29,31],"0503B":[9,11,15,16,17,18,20,23,25,28,30],"0504VA":[1,6,4,7],"0504VB":[3,5],"0504A":[8,12,13,14,19,21,22,24,26,27,29,31],"0504B":[9,11,15,16,17,18,20,23,25,28,30],"0505":[],"0506":[27],"0507S":[],"0507X":[],"0508A":[],"0508B":[],"0509":[]};
+const SEED_ASSIGNMENTS = {"0423BTC":[0,1,2,3,7,8,11,12,13,20,27,28,29,30,31],"0430VA":[1,2,6,7,4],"0430VB":[3,5],"0430A":[11,17,19,28,23,25],"0430B":[8,12,13,16,21,22,27,29,26],"0430C":[9,14,18,15,20,24,30,31],"0501VA":[1,6,7,4],"0501VB":[3,5,2],"0501A":[11,19,17,28,23,25],"0501B":[8,12,13,16,21,22,26,27,29],"0501C":[9,14,15,18,20,24,30,31],"0502VA":[1,4,7],"0502VB":[3,5,6],"0502A":[9,11,15,16,17,18,20,23,25,28,30],"0502B":[8,12,13,14,19,21,22,24,26,27,29,31],"0502C":[],"0503VA":[1,4,6,7],"0503VB":[3,5],"0503A":[8,12,13,14,19,21,22,24,26,27,29,31],"0503B":[9,11,15,16,17,18,20,23,25,28,30],"0504VA":[1,6,4,7],"0504VB":[3,5],"0504A":[8,12,13,14,19,21,22,24,26,27,29,31],"0504B":[9,11,15,16,17,18,20,23,25,28,30],"0505":[],"0506":[27],"0507S":[],"0507X":[],"0508A":[],"0508B":[],"0509":[]};
 
 function saveAssignments() {
   try { localStorage.setItem('sn26_assignments', JSON.stringify(assignments)); } catch(e) {}
