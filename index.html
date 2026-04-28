@@ -462,7 +462,7 @@ function renderLedCount() {
 }
 
 // ===== CUSTOM SCHEDULES =====
-const CUSTOM_CREW_INDICES = [0, 2, 27]; // Iqral, Luke Irvine, Tanner
+const CUSTOM_CREW_INDICES = [0, 2]; // Iqral, Luke Irvine
 let customSchedules = {}; // key: "crewIdx_YYYY-MM-DD" => { start: "08:00", end: "17:00" }
 
 function customSchedKey(crewIdx, date) {
@@ -590,12 +590,12 @@ const CREW = [
   { name: 'Ryan DeOcampo', short: 'Ryan DeOcampo', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,21), new Date(2026,3,22)], [new Date(2026,3,25), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
   { name: 'Arjay Sevilla', short: 'Arjay Sevilla', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
   { name: 'Sean McCoy', short: 'Sean McCoy', role: 'Local LED', group: 'local-led', dates: [[new Date(2026,3,20), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Tanner Ouimette', short: 'Tanner Ouimette', role: 'Networking', group: 'network', dates: [[new Date(2026,3,16), new Date(2026,4,9)]] },
-  { name: 'Tyler Noble', short: 'Tyler Noble', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,25), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Francisco Garcia', short: 'Francisco Garcia', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,20), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Luke Miles', short: 'Luke Miles', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,21), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'Jordan Noble', short: 'Jordan Noble', role: 'Catwalk', group: 'network', dates: [[new Date(2026,3,20), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
-  { name: 'JP Hartline', short: 'JP Hartline', role: 'Catwalk/d3', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,8)]] },
+  { name: 'Tanner Ouimette (other team)', short: 'Tanner', role: 'Networking', group: 'network', dates: [] },
+  { name: 'Tyler Noble', short: 'Tyler Noble', role: 'Catwalk', group: 'led', dates: [[new Date(2026,3,25), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Francisco Garcia', short: 'Francisco Garcia', role: 'Catwalk', group: 'led', dates: [[new Date(2026,3,20), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Luke Miles', short: 'Luke Miles', role: 'Catwalk', group: 'led', dates: [[new Date(2026,3,21), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'Jordan Noble', short: 'Jordan Noble', role: 'Catwalk', group: 'led', dates: [[new Date(2026,3,20), new Date(2026,3,28)], [new Date(2026,3,30), new Date(2026,4,4)], [new Date(2026,4,7), new Date(2026,4,8)]] },
+  { name: 'JP Hartline', short: 'JP Hartline', role: 'Content/d3 Support', group: 'video', dates: [[new Date(2026,3,29), new Date(2026,4,8)]] },
 ];
 
 const DAYS = [
@@ -910,7 +910,7 @@ function showToast(msg) {
 
 // --- localStorage persistence ---
 // Crew index reference: 0=Iqral, 1=Devore, 2=Luke I, 3=Riley, 4=Jared, 5=Alec, 6=Brandon, 7=Justice, 8=Hugo, 9=Matt C, 10=Bryant, 11=Jesse, 12=Maxwell, 13=Jonathan, 14=Barrett, 15=Tavis, 16=Vincent, 17=Eric, 18=Jeremiah, 19=John B, 20=Wayne, 21=Donald, 22=Kaden, 23=Joseph, 24=Ryan D, 25=Arjay, 26=Sean, 27=Tanner, 28=Tyler, 29=Francisco, 30=Luke M, 31=Jordan, 32=JP
-const SEED_ASSIGNMENTS = {"0423BTC":[0,1,2,3,7,8,11,12,13,20,27,28,29,30,31],"0430VA":[1,2,6,7,4],"0430VB":[3,5],"0430A":[11,17,19,28,23,25],"0430B":[8,12,13,16,21,22,27,29,26],"0430C":[9,14,18,15,20,24,30,31],"0501VA":[1,6,7,4],"0501VB":[3,5,2],"0501A":[11,19,17,28,23,25],"0501B":[8,12,13,16,21,22,26,27,29],"0501C":[9,14,15,18,20,24,30,31],"0502VA":[1,4,7],"0502VB":[3,5,6],"0502A":[9,11,15,16,17,18,20,23,25,28,30],"0502B":[8,12,13,14,19,21,22,24,26,27,29,31],"0502C":[],"0503VA":[1,4,6,7],"0503VB":[3,5],"0503A":[8,12,13,14,19,21,22,24,26,27,29,31],"0503B":[9,11,15,16,17,18,20,23,25,28,30],"0504VA":[1,6,4,7],"0504VB":[3,5],"0504A":[8,12,13,14,19,21,22,24,26,27,29,31],"0504B":[9,11,15,16,17,18,20,23,25,28,30],"0505":[],"0506":[27],"0507S":[],"0507X":[],"0508A":[],"0508B":[],"0509":[]};
+const SEED_ASSIGNMENTS = {"0423BTC":[0,1,2,3,7,8,11,12,13,20,28,29,30,31],"0430VA":[1,2,6,7,4],"0430VB":[3,5],"0430A":[11,17,19,28,23,25],"0430B":[8,12,13,16,21,22,29,26],"0430C":[9,14,18,15,20,24,30,31],"0501VA":[1,6,7,4],"0501VB":[3,5,2],"0501A":[11,19,17,28,23,25],"0501B":[8,12,13,16,21,22,26,29],"0501C":[9,14,15,18,20,24,30,31],"0502VA":[1,4,7],"0502VB":[3,5,6],"0502A":[9,11,15,16,17,18,20,23,25,28,30],"0502B":[8,12,13,14,19,21,22,24,26,29,31],"0502C":[],"0503VA":[1,4,6,7],"0503VB":[3,5],"0503A":[8,12,13,14,19,21,22,24,26,29,31],"0503B":[9,11,15,16,17,18,20,23,25,28,30],"0504VA":[1,6,4,7],"0504VB":[3,5],"0504A":[8,12,13,14,19,21,22,24,26,29,31],"0504B":[9,11,15,16,17,18,20,23,25,28,30],"0505":[],"0506":[],"0507S":[],"0507X":[],"0508A":[],"0508B":[],"0509":[]};
 
 function saveAssignments() {
   try { localStorage.setItem('sn26_assignments', JSON.stringify(assignments)); } catch(e) {}
@@ -938,6 +938,20 @@ function loadAssignments() {
         }
       } catch(e) {}
       localStorage.setItem('sn26_seed_v5', '1');
+    }
+    // v6 migration: Tanner Ouimette (idx 27) is on another team — strip from all assignments
+    if (!localStorage.getItem('sn26_seed_v6')) {
+      try {
+        const raw = localStorage.getItem('sn26_assignments');
+        if (raw) {
+          const d = JSON.parse(raw);
+          Object.keys(d).forEach(sid => {
+            if (Array.isArray(d[sid])) d[sid] = d[sid].filter(i => i !== 27);
+          });
+          localStorage.setItem('sn26_assignments', JSON.stringify(d));
+        }
+      } catch(e) {}
+      localStorage.setItem('sn26_seed_v6', '1');
     }
     const saved = localStorage.getItem('sn26_assignments');
     const data = saved ? JSON.parse(saved) : SEED_ASSIGNMENTS;
